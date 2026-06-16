@@ -94,10 +94,11 @@ button{
 
 <h1>部室予約</h1>
 
-<!-- ✅ 使用状況（簡易：予約があるかで判定） -->
-{% if reservations|length > 0 %}
+<!-- 使用状況 -->
+{% if in_use %}
 <div class="status-red">
     <h2>🔴 使用中</h2>
+    <p>{{ current_user }} さんが利用中</p>
 </div>
 {% else %}
 <div class="status-green">
@@ -110,13 +111,18 @@ button{
 <!-- ================= -->
 <h2>予約する</h2>
 
-/add
+<form action="/add" method="post">
 
     名前
     <input type="text" name="name" required>
 
     日付
-    <input type="date" name="date" required>
+    <input
+        type="date"
+        name="date"
+        min="{{ today }}"
+        value="{{ selected_date }}"
+        required>
 
     時間帯
     <select name="slot">
@@ -130,7 +136,7 @@ button{
 </form>
 
 <!-- ================= -->
-<!-- 検索フォーム -->
+<!-- 検索 -->
 <!-- ================= -->
 <h2>予約確認</h2>
 
@@ -140,17 +146,13 @@ button{
     <input
         type="date"
         name="date"
-        value="{{ search_date }}"
+        value="{{ selected_date }}"
         onchange="this.form.submit()">
 
 </form>
 
 <h3>
-    {% if search_date %}
-        {{ search_date }} の予約
-    {% else %}
-        全ての予約
-    {% endif %}
+    {{ selected_date }}（{{ selected_day }}）の予約
 </h3>
 
 <!-- ================= -->
@@ -160,18 +162,25 @@ button{
 {% if reservations %}
 
     {% for r in reservations %}
+
     <div class="card">
 
         <div class="slot">{{ r.slot }}</div>
 
         <div class="name">{{ r.name }}</div>
 
-        /delete
-            <input type="hidden" name="id" value="{{ r.id }}">
+        <form action="/delete" method="post">
+
+            <input type="hidden" name="date" value="{{ r.date }}">
+            <input type="hidden" name="slot" value="{{ r.slot }}">
+            <input type="hidden" name="name" value="{{ r.name }}">
+
             <button class="delete-btn">取消</button>
+
         </form>
 
     </div>
+
     {% endfor %}
 
 {% else %}
