@@ -10,16 +10,13 @@ app = Flask(__name__)
 # ----------------------
 MONGO_URL = os.environ.get("MONGO_URL")
 
-print("MONGO_URL =", MONGO_URL)  # ★デバッグ用
+print("MONGO_URL =", MONGO_URL)
 
 if not MONGO_URL:
     raise Exception("MONGO_URL が設定されていません")
 
 try:
-    # ✅ タイムアウト設定つける（重要）
     client = MongoClient(MONGO_URL, serverSelectionTimeoutMS=5000)
-
-    # ✅ 接続確認（これが超重要）
     client.admin.command('ping')
 
     db = client["clubroom"]
@@ -46,20 +43,33 @@ SLOTS = [
 ]
 
 # ----------------------
-# メイン画面
+# メイン画面（検索対応）
 # ----------------------
 @app.route("/")
 def index():
     if collection is None:
         return "データベースに接続できていません"
 
+    # ✅ 検索日付を取得
+    search_date = request.args.get("date")
+
     try:
-        data = list(collection.find({}, {"_id": 0}))
+        if search_date:
+            # ✅ 指定日のみ取得
+            data = list(collection.find({"date": search_date}, {"_id": 0}))
+        else:
+            # ✅ 全件
+            data = list(collection.find({}, {"_id": 0}))
     except Exception as e:
         print("DB取得エラー:", e)
         data = []
 
-    return render_template("index.html", reservations=data, slots=SLOTS)
+    return render_template(
+        "index.html",
+        reservations=data,
+        slots=SLOTS,
+        search_date=search_date
+    )
 
 # ----------------------
 # 予約追加
@@ -77,7 +87,6 @@ def add():
         return redirect("/")
 
     try:
-        # 重複チェック
         exists = collection.find_one({
             "date": date,
             "slot": slot
@@ -86,7 +95,6 @@ def add():
         if exists:
             return "その時間はすでに予約されています"
 
-        # データ追加
         collection.insert_one({
             "id": str(datetime.now().timestamp()),
             "name": name,
@@ -111,16 +119,14 @@ def delete():
 
     if reservation_id:
         try:
-            collection.delete_one({
-                "id": reservation_id
-            })
+            collection.delete_one({"id": reservation_id})
         except Exception as e:
             print("削除エラー:", e)
 
     return redirect("/")
 
 # ----------------------
-# ヘルスチェック（Render用）
+# ヘルスチェック
 # ----------------------
 @app.route("/health")
 def health():
