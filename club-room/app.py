@@ -13,7 +13,7 @@ MONGO_URL = os.environ.get("MONGO_URL")
 print("MONGO_URL =", MONGO_URL)
 
 if not MONGO_URL:
-    raise Exception("MONGO_URL が設定されていません")
+    print("⚠ MONGO_URL が設定されていません")
 
 try:
     client = MongoClient(MONGO_URL, serverSelectionTimeoutMS=5000)
@@ -42,33 +42,51 @@ SLOTS = [
     "19:30-21:00"
 ]
 
+WEEKDAYS = ["月","火","水","木","金","土","日"]
+
 # ----------------------
-# メイン画面（検索対応）
+# メイン画面（検索＋状態表示）
 # ----------------------
 @app.route("/")
 def index():
+
     if collection is None:
         return "データベースに接続できていません"
 
-    # ✅ 検索日付を取得
-    search_date = request.args.get("date")
+    # ✅ 日付取得（検索＋初期値）
+    selected_date = request.args.get("date")
+
+    if not selected_date:
+        selected_date = datetime.now().strftime("%Y-%m-%d")
+
+    # ✅ 曜日
+    dt = datetime.strptime(selected_date, "%Y-%m-%d")
+    selected_day = WEEKDAYS[dt.weekday()]
 
     try:
-        if search_date:
-            # ✅ 指定日のみ取得
-            data = list(collection.find({"date": search_date}, {"_id": 0}))
-        else:
-            # ✅ 全件
-            data = list(collection.find({}, {"_id": 0}))
+        # ✅ 指定日の予約だけ取得
+        reservations = list(collection.find(
+            {"date": selected_date},
+            {"_id": 0}
+        ))
     except Exception as e:
         print("DB取得エラー:", e)
-        data = []
+        reservations = []
+
+    # ✅ 使用中かどうか（1件でもあれば）
+    in_use = len(reservations) > 0
+
+    current_user = reservations[0]["name"] if reservations else ""
 
     return render_template(
         "index.html",
-        reservations=data,
+        reservations=reservations,
         slots=SLOTS,
-        search_date=search_date
+        selected_date=selected_date,
+        selected_day=selected_day,
+        in_use=in_use,
+        current_user=current_user,
+        today=datetime.now().strftime("%Y-%m-%d")
     )
 
 # ----------------------
@@ -76,6 +94,7 @@ def index():
 # ----------------------
 @app.route("/add", methods=["POST"])
 def add():
+
     if collection is None:
         return "データベースエラー"
 
@@ -87,6 +106,7 @@ def add():
         return redirect("/")
 
     try:
+        # ✅ 同じ日・同じ時間は予約禁止
         exists = collection.find_one({
             "date": date,
             "slot": slot
@@ -105,25 +125,31 @@ def add():
     except Exception as e:
         print("追加エラー:", e)
 
-    return redirect("/")
+    return redirect("/?date=" + date)
 
 # ----------------------
 # 予約削除
 # ----------------------
 @app.route("/delete", methods=["POST"])
 def delete():
+
     if collection is None:
         return redirect("/")
 
-    reservation_id = request.form.get("id")
+    date = request.form.get("date")
+    slot = request.form.get("slot")
+    name = request.form.get("name")
 
-    if reservation_id:
-        try:
-            collection.delete_one({"id": reservation_id})
-        except Exception as e:
-            print("削除エラー:", e)
+    try:
+        collection.delete_one({
+            "date": date,
+            "slot": slot,
+            "name": name
+        })
+    except Exception as e:
+        print("削除エラー:", e)
 
-    return redirect("/")
+    return redirect("/?date=" + date)
 
 # ----------------------
 # ヘルスチェック
