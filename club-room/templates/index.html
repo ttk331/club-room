@@ -2,122 +2,123 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>部屋予約システム</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>部室予約</title>
 
 <style>
-body {
+body{
     font-family: sans-serif;
-    background: #f4f4f4;
-    margin: 0;
+    max-width: 500px;
+    margin: auto;
+    padding: 15px;
+    background-color: #f8f8f8;
 }
 
-.container {
-    width: 90%;
-    max-width: 800px;
-    margin: 30px auto;
-}
-
-h1 {
+h1{
     text-align: center;
 }
 
-/* 状態表示 */
-.status {
-    color: white;
-    padding: 20px;
-    text-align: center;
-    border-radius: 10px;
-    margin-bottom: 20px;
-    font-size: 20px;
+h2{
+    margin-top: 30px;
 }
 
-.free {
-    background: green;
-}
-
-.busy {
-    background: red;
-}
-
-/* カード */
-.card {
+form{
     background: white;
-    padding: 20px;
+    padding: 15px;
     border-radius: 10px;
-    margin-bottom: 20px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
 }
 
-/* 入力 */
-input, select {
+input, select, button{
     width: 100%;
     padding: 10px;
-    margin: 10px 0;
+    margin-top: 8px;
+    box-sizing: border-box;
+    border-radius: 8px;
+    border: 1px solid #ccc;
 }
 
-/* ボタン */
-button {
-    width: 100%;
-    padding: 12px;
+button{
     background: green;
     color: white;
     border: none;
-    border-radius: 8px;
+    cursor: pointer;
 }
 
-.delete-btn {
+.delete-btn{
     background: red;
-    margin-top: 5px;
 }
 
-.reservation {
-    border-bottom: 1px solid #ccc;
-    padding: 10px 0;
+.card{
+    background: white;
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 10px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+
+.status-red{
+    background: #ff4d4d;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.status-green{
+    background: #28a745;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.slot{
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.name{
+    margin-top: 8px;
+    margin-bottom: 10px;
+}
+
+.no-reservation{
+    text-align: center;
 }
 </style>
-
 </head>
 
 <body>
 
-<div class="container">
+<h1>部室予約</h1>
 
-<h1>部屋予約</h1>
-
-<!-- 状態表示 -->
-{% if reservations|length == 0 %}
-<div class="status free">空いています</div>
+<!-- ✅ 使用状況（簡易：予約があるかで判定） -->
+{% if reservations|length > 0 %}
+<div class="status-red">
+    <h2>🔴 使用中</h2>
+</div>
 {% else %}
-<div class="status busy">予約あり</div>
+<div class="status-green">
+    <h2>🟢 空いています</h2>
+</div>
 {% endif %}
 
-<!-- ==================== -->
-<!-- 検索フォーム -->
-<!-- ==================== -->
-<div class="card">
-<h2>日付検索</h2>
-
-<form method="GET" action="/">
-    <input type="date" name="date" value="{{ search_date }}">
-    <button type="submit">検索</button>
-</form>
-
-</div>
-
-<!-- ==================== -->
+<!-- ================= -->
 <!-- 予約フォーム -->
-<!-- ==================== -->
-<div class="card">
+<!-- ================= -->
 <h2>予約する</h2>
 
-<form action="/add" method="POST">
+/add
 
-    <label>名前</label>
+    名前
     <input type="text" name="name" required>
 
-    <label>日付</label>
+    日付
     <input type="date" name="date" required>
 
-    <label>時間</label>
+    時間帯
     <select name="slot">
         {% for s in slots %}
         <option value="{{ s }}">{{ s }}</option>
@@ -128,33 +129,58 @@ button {
 
 </form>
 
-</div>
+<!-- ================= -->
+<!-- 検索フォーム -->
+<!-- ================= -->
+<h2>予約確認</h2>
 
-<!-- ==================== -->
+<form method="get">
+
+    日付
+    <input
+        type="date"
+        name="date"
+        value="{{ search_date }}"
+        onchange="this.form.submit()">
+
+</form>
+
+<h3>
+    {% if search_date %}
+        {{ search_date }} の予約
+    {% else %}
+        全ての予約
+    {% endif %}
+</h3>
+
+<!-- ================= -->
 <!-- 予約一覧 -->
-<!-- ==================== -->
-<div class="card">
-<h2>予約一覧</h2>
+<!-- ================= -->
 
-{% if reservations|length == 0 %}
-<p>該当する予約はありません</p>
+{% if reservations %}
+
+    {% for r in reservations %}
+    <div class="card">
+
+        <div class="slot">{{ r.slot }}</div>
+
+        <div class="name">{{ r.name }}</div>
+
+        /delete
+            <input type="hidden" name="id" value="{{ r.id }}">
+            <button class="delete-btn">取消</button>
+        </form>
+
+    </div>
+    {% endfor %}
+
+{% else %}
+
+<div class="card no-reservation">
+    この日の予約はありません
+</div>
+
 {% endif %}
-
-{% for r in reservations %}
-<div class="reservation">
-    <div><b>{{ r.date }}</b> / {{ r.slot }}</div>
-    <div>{{ r.name }}</div>
-
-    <form action="/delete" method="POST">
-        <input type="hidden" name="id" value="{{ r.id }}">
-        <button class="delete-btn">削除</button>
-    </form>
-</div>
-{% endfor %}
-
-</div>
-
-</div>
 
 </body>
 </html>
