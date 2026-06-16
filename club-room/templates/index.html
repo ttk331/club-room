@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>部屋予約</title>
+<title>部屋予約システム</title>
 
 <style>
 body {
@@ -69,12 +69,12 @@ button {
     margin-top: 5px;
 }
 
-/* 予約 */
 .reservation {
     border-bottom: 1px solid #ccc;
     padding: 10px 0;
 }
 </style>
+
 </head>
 
 <body>
@@ -83,12 +83,25 @@ button {
 
 <h1>部屋予約</h1>
 
-<!-- 状態 -->
+<!-- 状態表示 -->
 {% if reservations|length == 0 %}
 <div class="status free">空いています</div>
 {% else %}
 <div class="status busy">予約あり</div>
 {% endif %}
+
+<!-- ==================== -->
+<!-- 検索フォーム -->
+<!-- ==================== -->
+<div class="card">
+<h2>日付検索</h2>
+
+<form method="GET" action="/">
+    <input type="date" name="date" value="{{ search_date }}">
+    <button type="submit">検索</button>
+</form>
+
+</div>
 
 <!-- ==================== -->
 <!-- 予約フォーム -->
@@ -124,7 +137,7 @@ button {
 <h2>予約一覧</h2>
 
 {% if reservations|length == 0 %}
-<p>この日の予約はありません</p>
+<p>該当する予約はありません</p>
 {% endif %}
 
 {% for r in reservations %}
