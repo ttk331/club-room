@@ -10,14 +10,23 @@ app = Flask(__name__)
 # ----------------------
 MONGO_URL = os.environ.get("MONGO_URL")
 
+print("MONGO_URL =", MONGO_URL)  # ★デバッグ用
+
 if not MONGO_URL:
-    print("⚠ MONGO_URL が設定されていません")
+    raise Exception("MONGO_URL が設定されていません")
 
 try:
-    client = MongoClient(MONGO_URL)
+    # ✅ タイムアウト設定つける（重要）
+    client = MongoClient(MONGO_URL, serverSelectionTimeoutMS=5000)
+
+    # ✅ 接続確認（これが超重要）
+    client.admin.command('ping')
+
     db = client["clubroom"]
     collection = db["reservations"]
+
     print("✅ MongoDB接続成功")
+
 except Exception as e:
     print("❌ MongoDB接続エラー:", e)
     collection = None
