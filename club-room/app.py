@@ -41,7 +41,7 @@ SLOTS = [
 # ----------------------
 @app.route("/")
 def index():
-    if not collection:
+    if collection is None:
         return "データベースに接続できていません"
 
     try:
@@ -57,7 +57,7 @@ def index():
 # ----------------------
 @app.route("/add", methods=["POST"])
 def add():
-    if not collection:
+    if collection is None:
         return "データベースエラー"
 
     name = request.form.get("name")
@@ -95,7 +95,7 @@ def add():
 # ----------------------
 @app.route("/delete", methods=["POST"])
 def delete():
-    if not collection:
+    if collection is None:
         return redirect("/")
 
     reservation_id = request.form.get("id")
