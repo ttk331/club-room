@@ -45,7 +45,7 @@ SLOTS = [
 WEEKDAYS = ["月","火","水","木","金","土","日"]
 
 # ----------------------
-# メイン画面（検索＋状態表示）
+# メイン画面
 # ----------------------
 @app.route("/")
 def index():
@@ -53,7 +53,7 @@ def index():
     if collection is None:
         return "データベースに接続できていません"
 
-    # ✅ 日付取得（検索＋初期値）
+    # ✅ 日付取得
     selected_date = request.args.get("date")
 
     if not selected_date:
@@ -64,7 +64,6 @@ def index():
     selected_day = WEEKDAYS[dt.weekday()]
 
     try:
-        # ✅ 指定日の予約だけ取得
         reservations = list(collection.find(
             {"date": selected_date},
             {"_id": 0}
@@ -73,10 +72,30 @@ def index():
         print("DB取得エラー:", e)
         reservations = []
 
-    # ✅ 使用中かどうか（1件でもあれば）
-    in_use = len(reservations) > 0
+    # ======================
+    # ✅ ✅ 使用中判定（修正版）
+    # ======================
+    today = datetime.now().strftime("%Y-%m-%d")
+    now = datetime.now()
+    now_time = now.time()
 
-    current_user = reservations[0]["name"] if reservations else ""
+    in_use = False
+    current_user = ""
+
+    if selected_date == today:
+        for r in reservations:
+            start_str, end_str = r["slot"].split("-")
+
+            start_time = datetime.strptime(start_str, "%H:%M").time()
+            end_time = datetime.strptime(end_str, "%H:%M").time()
+
+            # ✅ 正しい時間比較
+            if start_time <= now_time < end_time:
+                in_use = True
+                current_user = r["name"]
+                break
+
+    # ======================
 
     return render_template(
         "index.html",
@@ -106,7 +125,7 @@ def add():
         return redirect("/")
 
     try:
-        # ✅ 同じ日・同じ時間は予約禁止
+        # ✅ 重複防止
         exists = collection.find_one({
             "date": date,
             "slot": slot
