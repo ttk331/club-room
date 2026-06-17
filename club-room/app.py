@@ -68,6 +68,10 @@ def index():
             {"date": selected_date},
             {"_id": 0}
         ))
+    # ✅ 時間順に並び替え
+reservations.sort(
+    key=lambda x: datetime.strptime(x["slot"].split("-")[0], "%H:%M")
+)
     except Exception as e:
         print("DB取得エラー:", e)
         reservations = []
