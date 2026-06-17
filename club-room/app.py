@@ -68,16 +68,20 @@ def index():
             {"date": selected_date},
             {"_id": 0}
         ))
-    # ✅ 時間順に並び替え
-reservations.sort(
-    key=lambda x: datetime.strptime(x["slot"].split("-")[0], "%H:%M")
-)
+
+        # ✅ ✅ 時間順に並び替え（追加）
+        reservations.sort(
+            key=lambda x: datetime.strptime(
+                x["slot"].split("-")[0], "%H:%M"
+            )
+        )
+
     except Exception as e:
         print("DB取得エラー:", e)
         reservations = []
 
     # ======================
-    # ✅ ✅ 使用中判定（修正版）
+    # ✅ ✅ 使用中判定（リアルタイム）
     # ======================
     today = datetime.now().strftime("%Y-%m-%d")
     now = datetime.now()
@@ -93,7 +97,7 @@ reservations.sort(
             start_time = datetime.strptime(start_str, "%H:%M").time()
             end_time = datetime.strptime(end_str, "%H:%M").time()
 
-            # ✅ 正しい時間比較
+            # ✅ 正確な時間判定
             if start_time <= now_time < end_time:
                 in_use = True
                 current_user = r["name"]
