@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect
 from pymongo import MongoClient
-from datetime import datetime
+from datetime import datetime, timedelta, time
 import os
 
 app = Flask(__name__)
@@ -53,9 +53,15 @@ def index():
     if collection is None:
         return "データベースに接続できていません"
 
+    # ✅ 古いデータ削除（7日以上前）
+    try:
+        limit_date = (datetime.now() - timedelta(days=7)).strftime("%Y-%m-%d")
+        collection.delete_many({"date": {"$lt": limit_date}})
+    except Exception as e:
+        print("削除エラー:", e)
+
     # ✅ 日付取得
     selected_date = request.args.get("date")
-
     if not selected_date:
         selected_date = datetime.now().strftime("%Y-%m-%d")
 
@@ -69,7 +75,7 @@ def index():
             {"_id": 0}
         ))
 
-        # ✅ ✅ 時間順に並び替え（追加）
+        # ✅ 時間順並び替え
         reservations.sort(
             key=lambda x: datetime.strptime(
                 x["slot"].split("-")[0], "%H:%M"
@@ -81,24 +87,32 @@ def index():
         reservations = []
 
     # ======================
-    # ✅ ✅ 使用中判定（リアルタイム）
+    # ✅ ✅ ✅ リアルタイム使用判定（完全修正版）
     # ======================
-    today = datetime.now().strftime("%Y-%m-%d")
+
     now = datetime.now()
     now_time = now.time()
+    today = now.strftime("%Y-%m-%d")
 
     in_use = False
     current_user = ""
 
     if selected_date == today:
+
         for r in reservations:
+
             start_str, end_str = r["slot"].split("-")
 
             start_time = datetime.strptime(start_str, "%H:%M").time()
             end_time = datetime.strptime(end_str, "%H:%M").time()
 
-            # ✅ 正確な時間判定
-            if start_time <= now_time < end_time:
+            # ✅ 秒を無視して比較（重要）
+            start = time(start_time.hour, start_time.minute)
+            end = time(end_time.hour, end_time.minute)
+            now_t = time(now_time.hour, now_time.minute)
+
+            # ✅ 厳密判定
+            if start <= now_t < end:
                 in_use = True
                 current_user = r["name"]
                 break
@@ -113,7 +127,7 @@ def index():
         selected_day=selected_day,
         in_use=in_use,
         current_user=current_user,
-        today=datetime.now().strftime("%Y-%m-%d")
+        today=today
     )
 
 # ----------------------
@@ -133,7 +147,6 @@ def add():
         return redirect("/")
 
     try:
-        # ✅ 重複防止
         exists = collection.find_one({
             "date": date,
             "slot": slot
@@ -190,3 +203,4 @@ def health():
 # ----------------------
 if __name__ == "__main__":
     app.run(debug=True)
+``
