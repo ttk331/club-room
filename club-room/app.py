@@ -53,17 +53,23 @@ def index():
     if collection is None:
         return "データベースに接続できていません"
 
-    # ✅ 古いデータ削除（7日以上前）
+    # ✅ 古いデータ削除（7日前より前）
     try:
         limit_date = (datetime.now() - timedelta(days=7)).strftime("%Y-%m-%d")
-        collection.delete_many({"date": {"$lt": limit_date}})
+        collection.delete_many({
+            "date": {"$lt": limit_date}
+        })
     except Exception as e:
         print("削除エラー:", e)
 
-    # ✅ 日付取得
+    # ✅ 日付取得（ここが修正ポイント）
     selected_date = request.args.get("date")
+
     if not selected_date:
         selected_date = datetime.now().strftime("%Y-%m-%d")
+    else:
+        # ✅ ★スラッシュをハイフンに統一（超重要）
+        selected_date = selected_date.replace("/", "-").strip()
 
     # ✅ 曜日
     dt = datetime.strptime(selected_date, "%Y-%m-%d")
@@ -75,7 +81,7 @@ def index():
             {"_id": 0}
         ))
 
-        # ✅ 時間順並び替え
+        # ✅ 時間順に並び替え
         reservations.sort(
             key=lambda x: datetime.strptime(
                 x["slot"].split("-")[0], "%H:%M"
@@ -87,9 +93,8 @@ def index():
         reservations = []
 
     # ======================
-    # ✅ ✅ ✅ リアルタイム使用判定（完全修正版）
+    # ✅ ✅ ✅ リアルタイム使用判定（完全修正）
     # ======================
-
     now = datetime.now()
     now_time = now.time()
     today = now.strftime("%Y-%m-%d")
@@ -100,18 +105,17 @@ def index():
     if selected_date == today:
 
         for r in reservations:
-
             start_str, end_str = r["slot"].split("-")
 
             start_time = datetime.strptime(start_str, "%H:%M").time()
             end_time = datetime.strptime(end_str, "%H:%M").time()
 
-            # ✅ 秒を無視して比較（重要）
+            # ✅ 秒を無視して比較
             start = time(start_time.hour, start_time.minute)
             end = time(end_time.hour, end_time.minute)
             now_t = time(now_time.hour, now_time.minute)
 
-            # ✅ 厳密判定
+            # ✅ 正しい判定
             if start <= now_t < end:
                 in_use = True
                 current_user = r["name"]
@@ -146,6 +150,9 @@ def add():
     if not (name and date and slot):
         return redirect("/")
 
+    # ✅ 日付統一（追加）
+    date = date.replace("/", "-")
+
     try:
         exists = collection.find_one({
             "date": date,
@@ -176,7 +183,7 @@ def delete():
     if collection is None:
         return redirect("/")
 
-    date = request.form.get("date")
+    date = request.form.get("date").replace("/", "-")
     slot = request.form.get("slot")
     name = request.form.get("name")
 
@@ -203,4 +210,3 @@ def health():
 # ----------------------
 if __name__ == "__main__":
     app.run(debug=True)
-``
