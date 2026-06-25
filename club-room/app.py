@@ -53,18 +53,21 @@ def index():
     if collection is None:
         return "データベースに接続できていません"
 
-    # ✅ 7日前のデータ削除
+    # ✅ 日本時間（超重要）
+    now = datetime.utcnow() + timedelta(hours=9)
+
+    # ✅ 7日前データ削除
     try:
-        limit_date = (datetime.utcnow() + timedelta(hours=9) - timedelta(days=7)).strftime("%Y-%m-%d")
+        limit_date = (now - timedelta(days=7)).strftime("%Y-%m-%d")
         collection.delete_many({"日付": {"$lt": limit_date}})
     except Exception as e:
         print("削除エラー:", e)
 
-    # ✅ 日付取得（統一）
+    # ✅ 日付取得
     selected_date = request.args.get("date")
 
     if not selected_date:
-        selected_date = (datetime.utcnow() + timedelta(hours=9)).strftime("%Y-%m-%d")
+        selected_date = now.strftime("%Y-%m-%d")
     else:
         selected_date = selected_date.replace("/", "-").strip()
 
@@ -72,7 +75,7 @@ def index():
     dt = datetime.strptime(selected_date, "%Y-%m-%d")
     selected_day = WEEKDAYS[dt.weekday()]
 
-    # ✅ 予約取得（日本語キー）
+    # ✅ 予約取得
     try:
         reservations = list(collection.find(
             {"日付": selected_date},
@@ -91,21 +94,18 @@ def index():
         reservations = []
 
     # ======================
-    # ✅ ✅ ✅ リアルタイム判定（JST対応）
+    # ✅ ✅ ✅ リアルタイム使用判定（完全版）
     # ======================
 
     in_use = False
     current_user = ""
 
-    # ✅ 日本時間（ここが最重要）
-    now = datetime.utcnow() + timedelta(hours=9)
-
     today_str = now.strftime("%Y-%m-%d")
     now_time = now.time()
 
     for r in reservations:
-
         try:
+            # ✅ 日付統一
             db_date = r["日付"].replace("/", "-")
 
             if db_date != today_str:
@@ -116,6 +116,7 @@ def index():
             start_time = datetime.strptime(start_str.strip(), "%H:%M").time()
             end_time = datetime.strptime(end_str.strip(), "%H:%M").time()
 
+            # ✅ 正しい比較（これ重要）
             if start_time <= now_time < end_time:
                 in_use = True
                 current_user = r["名前"]
@@ -165,7 +166,7 @@ def add():
             return "その時間はすでに予約されています"
 
         collection.insert_one({
-            "id": str(datetime.utcnow().timestamp()),
+            "id": str(now_timestamp()),
             "名前": name,
             "日付": date,
             "スロット": slot
@@ -175,6 +176,10 @@ def add():
         print("追加エラー:", e)
 
     return redirect("/?date=" + date)
+
+# ✅ タイムスタンプ関数（念のため安定化）
+def now_timestamp():
+    return datetime.utcnow().timestamp()
 
 # ----------------------
 # 予約削除
@@ -212,4 +217,3 @@ def health():
 # ----------------------
 if __name__ == "__main__":
     app.run(debug=True)
-``
