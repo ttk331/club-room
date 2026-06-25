@@ -53,18 +53,18 @@ def index():
     if collection is None:
         return "データベースに接続できていません"
 
-    # ✅ 7日前より古いデータ削除
+    # ✅ 7日前のデータ削除
     try:
-        limit_date = (datetime.now() - timedelta(days=7)).strftime("%Y-%m-%d")
+        limit_date = (datetime.utcnow() + timedelta(hours=9) - timedelta(days=7)).strftime("%Y-%m-%d")
         collection.delete_many({"日付": {"$lt": limit_date}})
     except Exception as e:
         print("削除エラー:", e)
 
-    # ✅ 日付取得
+    # ✅ 日付取得（統一）
     selected_date = request.args.get("date")
 
     if not selected_date:
-        selected_date = datetime.now().strftime("%Y-%m-%d")
+        selected_date = (datetime.utcnow() + timedelta(hours=9)).strftime("%Y-%m-%d")
     else:
         selected_date = selected_date.replace("/", "-").strip()
 
@@ -72,14 +72,14 @@ def index():
     dt = datetime.strptime(selected_date, "%Y-%m-%d")
     selected_day = WEEKDAYS[dt.weekday()]
 
-    # ✅ DBから取得（←日本語キー！）
+    # ✅ 予約取得（日本語キー）
     try:
         reservations = list(collection.find(
             {"日付": selected_date},
             {"_id": 0}
         ))
 
-        # ✅ 時間順に並び替え
+        # ✅ 時間順ソート
         reservations.sort(
             key=lambda x: datetime.strptime(
                 x["スロット"].split("-")[0], "%H:%M"
@@ -91,20 +91,21 @@ def index():
         reservations = []
 
     # ======================
-    # ✅ ✅ ✅ リアルタイム使用判定（完全版）
+    # ✅ ✅ ✅ リアルタイム判定（JST対応）
     # ======================
 
     in_use = False
     current_user = ""
 
-    now = datetime.now()
+    # ✅ 日本時間（ここが最重要）
+    now = datetime.utcnow() + timedelta(hours=9)
+
     today_str = now.strftime("%Y-%m-%d")
     now_time = now.time()
 
     for r in reservations:
 
         try:
-            # ✅ 日本語キー使用
             db_date = r["日付"].replace("/", "-")
 
             if db_date != today_str:
@@ -121,7 +122,7 @@ def index():
                 break
 
         except Exception as e:
-            print("時間処理エラー:", e)
+            print("時間エラー:", e)
 
     # ======================
 
@@ -152,11 +153,9 @@ def add():
     if not (name and date and slot):
         return redirect("/")
 
-    # ✅ 日付統一
     date = date.replace("/", "-")
 
     try:
-        # ✅ 重複チェック
         exists = collection.find_one({
             "日付": date,
             "スロット": slot
@@ -165,9 +164,8 @@ def add():
         if exists:
             return "その時間はすでに予約されています"
 
-        # ✅ 日本語キーで保存
         collection.insert_one({
-            "id": str(datetime.now().timestamp()),
+            "id": str(datetime.utcnow().timestamp()),
             "名前": name,
             "日付": date,
             "スロット": slot
@@ -214,3 +212,4 @@ def health():
 # ----------------------
 if __name__ == "__main__":
     app.run(debug=True)
+``
