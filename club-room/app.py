@@ -53,14 +53,14 @@ def index():
     if collection is None:
         return "データベースに接続できていません"
 
-    # ✅ 7日前のデータ削除
+    # ✅ 7日前より古いデータ削除
     try:
         limit_date = (datetime.now() - timedelta(days=7)).strftime("%Y-%m-%d")
-        collection.delete_many({"date": {"$lt": limit_date}})
+        collection.delete_many({"日付": {"$lt": limit_date}})
     except Exception as e:
         print("削除エラー:", e)
 
-    # ✅ 日付取得（フォーマット統一）
+    # ✅ 日付取得
     selected_date = request.args.get("date")
 
     if not selected_date:
@@ -72,17 +72,17 @@ def index():
     dt = datetime.strptime(selected_date, "%Y-%m-%d")
     selected_day = WEEKDAYS[dt.weekday()]
 
-    # ✅ 予約取得
+    # ✅ DBから取得（←日本語キー！）
     try:
         reservations = list(collection.find(
-            {"date": selected_date},
+            {"日付": selected_date},
             {"_id": 0}
         ))
 
-        # ✅ 時間順ソート
+        # ✅ 時間順に並び替え
         reservations.sort(
             key=lambda x: datetime.strptime(
-                x["slot"].split("-")[0], "%H:%M"
+                x["スロット"].split("-")[0], "%H:%M"
             )
         )
 
@@ -93,6 +93,7 @@ def index():
     # ======================
     # ✅ ✅ ✅ リアルタイム使用判定（完全版）
     # ======================
+
     in_use = False
     current_user = ""
 
@@ -102,19 +103,21 @@ def index():
 
     for r in reservations:
 
-        # ✅ 同じ日だけ判定
-        if r["date"] != today_str:
-            continue
-
         try:
-            start_str, end_str = r["slot"].split("-")
+            # ✅ 日本語キー使用
+            db_date = r["日付"].replace("/", "-")
+
+            if db_date != today_str:
+                continue
+
+            start_str, end_str = r["スロット"].split("-")
 
             start_time = datetime.strptime(start_str.strip(), "%H:%M").time()
             end_time = datetime.strptime(end_str.strip(), "%H:%M").time()
 
             if start_time <= now_time < end_time:
                 in_use = True
-                current_user = r["name"]
+                current_user = r["名前"]
                 break
 
         except Exception as e:
@@ -155,18 +158,19 @@ def add():
     try:
         # ✅ 重複チェック
         exists = collection.find_one({
-            "date": date,
-            "slot": slot
+            "日付": date,
+            "スロット": slot
         })
 
         if exists:
             return "その時間はすでに予約されています"
 
+        # ✅ 日本語キーで保存
         collection.insert_one({
             "id": str(datetime.now().timestamp()),
-            "name": name,
-            "date": date,
-            "slot": slot
+            "名前": name,
+            "日付": date,
+            "スロット": slot
         })
 
     except Exception as e:
@@ -189,9 +193,9 @@ def delete():
 
     try:
         collection.delete_one({
-            "date": date,
-            "slot": slot,
-            "name": name
+            "日付": date,
+            "スロット": slot,
+            "名前": name
         })
     except Exception as e:
         print("削除エラー:", e)
@@ -210,4 +214,3 @@ def health():
 # ----------------------
 if __name__ == "__main__":
     app.run(debug=True)
-``
