@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect
 from pymongo import MongoClient
-from datetime import datetime, timedelta, time
+from datetime import datetime, timedelta
 import os
 
 app = Flask(__name__)
@@ -53,35 +53,33 @@ def index():
     if collection is None:
         return "データベースに接続できていません"
 
-    # ✅ 古いデータ削除（7日前より前）
+    # ✅ 7日前のデータ削除
     try:
         limit_date = (datetime.now() - timedelta(days=7)).strftime("%Y-%m-%d")
-        collection.delete_many({
-            "date": {"$lt": limit_date}
-        })
+        collection.delete_many({"date": {"$lt": limit_date}})
     except Exception as e:
         print("削除エラー:", e)
 
-    # ✅ 日付取得（ここが修正ポイント）
+    # ✅ 日付取得（フォーマット統一）
     selected_date = request.args.get("date")
 
     if not selected_date:
         selected_date = datetime.now().strftime("%Y-%m-%d")
     else:
-        # ✅ ★スラッシュをハイフンに統一（超重要）
         selected_date = selected_date.replace("/", "-").strip()
 
     # ✅ 曜日
     dt = datetime.strptime(selected_date, "%Y-%m-%d")
     selected_day = WEEKDAYS[dt.weekday()]
 
+    # ✅ 予約取得
     try:
         reservations = list(collection.find(
             {"date": selected_date},
             {"_id": 0}
         ))
 
-        # ✅ 時間順に並び替え
+        # ✅ 時間順ソート
         reservations.sort(
             key=lambda x: datetime.strptime(
                 x["slot"].split("-")[0], "%H:%M"
@@ -93,33 +91,34 @@ def index():
         reservations = []
 
     # ======================
-    # ✅ ✅ ✅ リアルタイム使用判定（完全修正）
+    # ✅ ✅ ✅ リアルタイム使用判定（完全版）
     # ======================
-    now = datetime.now()
-    now_time = now.time()
-    today = now.strftime("%Y-%m-%d")
-
     in_use = False
     current_user = ""
 
-    if selected_date == today:
+    now = datetime.now()
+    today_str = now.strftime("%Y-%m-%d")
+    now_time = now.time()
 
-        for r in reservations:
+    for r in reservations:
+
+        # ✅ 同じ日だけ判定
+        if r["date"] != today_str:
+            continue
+
+        try:
             start_str, end_str = r["slot"].split("-")
 
-            start_time = datetime.strptime(start_str, "%H:%M").time()
-            end_time = datetime.strptime(end_str, "%H:%M").time()
+            start_time = datetime.strptime(start_str.strip(), "%H:%M").time()
+            end_time = datetime.strptime(end_str.strip(), "%H:%M").time()
 
-            # ✅ 秒を無視して比較
-            start = time(start_time.hour, start_time.minute)
-            end = time(end_time.hour, end_time.minute)
-            now_t = time(now_time.hour, now_time.minute)
-
-            # ✅ 正しい判定
-            if start <= now_t < end:
+            if start_time <= now_time < end_time:
                 in_use = True
                 current_user = r["name"]
                 break
+
+        except Exception as e:
+            print("時間処理エラー:", e)
 
     # ======================
 
@@ -131,7 +130,7 @@ def index():
         selected_day=selected_day,
         in_use=in_use,
         current_user=current_user,
-        today=today
+        today=today_str
     )
 
 # ----------------------
@@ -150,10 +149,11 @@ def add():
     if not (name and date and slot):
         return redirect("/")
 
-    # ✅ 日付統一（追加）
+    # ✅ 日付統一
     date = date.replace("/", "-")
 
     try:
+        # ✅ 重複チェック
         exists = collection.find_one({
             "date": date,
             "slot": slot
@@ -210,3 +210,4 @@ def health():
 # ----------------------
 if __name__ == "__main__":
     app.run(debug=True)
+``
