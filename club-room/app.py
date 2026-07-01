@@ -234,11 +234,11 @@ def add():
     name = request.form.get("name")
     date = request.form.get("date")
     slot = request.form.get("slot")
-　　
-　　# 開発者設定
-　　if name == "開発者設定":
-   　　 return redirect("/admin")
-    
+
+    # 開発者設定
+    if name == "開発者設定":
+        return redirect("/admin")
+
     if not (
         name and
         date and
