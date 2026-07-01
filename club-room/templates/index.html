@@ -98,6 +98,7 @@ input[type="date"]{
 
 </style>
 
+<!-- 60秒ごと更新 -->
 <meta http-equiv="refresh" content="60">
 
 </head>
@@ -116,23 +117,30 @@ input[type="date"]{
 </div>
 {% endif %}
 
+<!-- 日付選択 -->
+
 <div class="card">
 
-    <form method="get">
+<form method="get">
 
-        <label>日付選択</label>
+    <label>
+        日付選択
+    </label>
 
-        <br><br>
+    <br><br>
 
-        <input
-            type="date"
-            name="date"
-            value="{{ selected_date }}"
-            onchange="this.form.submit()">
+    <input
+        type="date"
+        name="date"
+        value="{{ selected_date }}"
+        min="{{ today }}"
+        onchange="this.form.submit()">
 
-    </form>
+</form>
 
 </div>
+
+<!-- 予約表 -->
 
 <div class="card">
 
@@ -151,79 +159,79 @@ input[type="date"]{
 
 <tr>
 
-    <td class="time-cell">
+<td class="time-cell">
 
-        {% if loop.index == 1 %}
-            1限　{{ item.slot.replace("-", " ～ ") }}
+{% if loop.index == 1 %}
+1限　{{ item.slot.replace("-", " ～ ") }}
 
-        {% elif loop.index == 2 %}
-            2限　{{ item.slot.replace("-", " ～ ") }}
+{% elif loop.index == 2 %}
+2限　{{ item.slot.replace("-", " ～ ") }}
 
-        {% elif loop.index == 3 %}
-            昼休み　{{ item.slot.replace("-", " ～ ") }}
+{% elif loop.index == 3 %}
+昼休み　{{ item.slot.replace("-", " ～ ") }}
 
-        {% elif loop.index == 4 %}
-            3限　{{ item.slot.replace("-", " ～ ") }}
+{% elif loop.index == 4 %}
+3限　{{ item.slot.replace("-", " ～ ") }}
 
-        {% elif loop.index == 5 %}
-            4限　{{ item.slot.replace("-", " ～ ") }}
+{% elif loop.index == 5 %}
+4限　{{ item.slot.replace("-", " ～ ") }}
 
-        {% elif loop.index == 6 %}
-            5限　{{ item.slot.replace("-", " ～ ") }}
+{% elif loop.index == 6 %}
+5限　{{ item.slot.replace("-", " ～ ") }}
 
-        {% elif loop.index == 7 %}
-            6限　{{ item.slot.replace("-", " ～ ") }}
+{% elif loop.index == 7 %}
+6限　{{ item.slot.replace("-", " ～ ") }}
 
-        {% elif loop.index == 8 %}
-            7限　{{ item.slot.replace("-", " ～ ") }}
+{% elif loop.index == 8 %}
+7限　{{ item.slot.replace("-", " ～ ") }}
 
-        {% endif %}
+{% endif %}
 
-    </td>
+</td>
 
-    <td>
+<td>
 
-        {% if item.reserved %}
+{% if item.reserved %}
 
-            <div class="band-name">
-                {{ item.name }}
-            </div>
+<div class="band-name">
+🎵 {{ item.name }}
+</div>
 
-        {% else %}
+{% else %}
 
-            <form action="/add" method="post">
+<form action="/add" method="post">
 
-                <input
-                    type="hidden"
-                    name="date"
-                    value="{{ selected_date }}">
+    <input
+        type="hidden"
+        name="date"
+        value="{{ selected_date }}">
 
-                <input
-                    type="hidden"
-                    name="slot"
-                    value="{{ item.slot }}">
+    <input
+        type="hidden"
+        name="slot"
+        value="{{ item.slot }}">
 
-                <input
-                    type="text"
-                    name="name"
-                    placeholder="バンド名"
-                    required>
+    <input
+        type="text"
+        name="name"
+        placeholder="バンド名"
+        required>
 
-                <br>
+    <br>
 
-                <button
-                    type="submit"
-                    class="reserve-btn">
+    <button
+        type="submit"
+        class="reserve-btn">
 
-                    予約
+        予約
 
-                </button>
+    </button>
 
-            </form>
+</form>
 
-        {% endif %}
+{% endif %}
 
-    </td>
+</td>
 
 </tr>
 
