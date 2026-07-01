@@ -6,7 +6,7 @@ import os
 app = Flask(__name__)
 
 # --------------------------
-# MongoDB
+# MongoDB接続
 # --------------------------
 MONGO_URL = os.environ.get("MONGO_URL")
 
@@ -27,7 +27,6 @@ except Exception as e:
     print("❌ MongoDB接続エラー:", e)
     collection = None
 
-
 # --------------------------
 # 時間帯
 # --------------------------
@@ -47,7 +46,6 @@ WEEKDAYS = [
     "木", "金", "土", "日"
 ]
 
-
 # --------------------------
 # メイン画面
 # --------------------------
@@ -61,7 +59,7 @@ def index():
     now = datetime.utcnow() + timedelta(hours=9)
 
     # --------------------------
-    # 7日前以前削除
+    # 7日前より古い予約削除
     # --------------------------
     try:
 
@@ -105,7 +103,7 @@ def index():
     ]
 
     # --------------------------
-    # 当日の予約取得
+    # 予約取得
     # --------------------------
     try:
 
@@ -116,10 +114,6 @@ def index():
             )
         )
 
-        print("予約データ")
-        for r in reservations:
-            print(r)
-
         reservations.sort(
             key=lambda x:
             datetime.strptime(
@@ -129,6 +123,7 @@ def index():
         )
 
     except Exception as e:
+
         print("取得エラー:", e)
         reservations = []
 
@@ -184,7 +179,7 @@ def index():
             print("時間判定エラー:", e)
 
     # --------------------------
-    # 表用データ作成
+    # 表用データ
     # --------------------------
     slot_status = []
 
@@ -204,10 +199,9 @@ def index():
             slot_status.append({
                 "slot": slot,
                 "reserved": True,
-                "name": (
+                "name":
                     reservation.get("名称")
                     or reservation.get("名前", "")
-                )
             })
 
         else:
@@ -224,9 +218,9 @@ def index():
         selected_date=selected_date,
         selected_day=selected_day,
         in_use=in_use,
-        current_user=current_user
+        current_user=current_user,
+        today=now.strftime("%Y-%m-%d")
     )
-
 
 # --------------------------
 # 予約追加
@@ -252,6 +246,16 @@ def add():
         date.replace("/", "-")
         .strip()
     )
+
+    # --------------------------
+    # 過去日予約禁止
+    # --------------------------
+    today = (
+        datetime.utcnow() + timedelta(hours=9)
+    ).strftime("%Y-%m-%d")
+
+    if date < today:
+        return "過去の日付は予約できません"
 
     try:
 
@@ -279,9 +283,8 @@ def add():
         "/?date=" + date
     )
 
-
 # --------------------------
-# 削除
+# 予約削除
 # --------------------------
 @app.route("/delete", methods=["POST"])
 def delete():
@@ -311,14 +314,12 @@ def delete():
         "/?date=" + date
     )
 
-
 # --------------------------
 # ヘルスチェック
 # --------------------------
 @app.route("/health")
 def health():
     return "OK"
-
 
 # --------------------------
 # 起動
