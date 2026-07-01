@@ -4,140 +4,137 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>部室予約</title>
+<title>部室予約システム</title>
 
 <style>
+
 body{
-    font-family: sans-serif;
-    max-width: 500px;
+    font-family: "Yu Gothic", sans-serif;
+    max-width: 1000px;
     margin: auto;
-    padding: 15px;
-    background-color: #f8f8f8;
+    padding: 20px;
+    background-color: #f5f5f5;
 }
 
 h1{
     text-align: center;
 }
 
-h2{
-    margin-top: 30px;
-}
-
-form{
-    background: white;
-    padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0 0 5px rgba(0,0,0,0.1);
-}
-
-input, select, button{
-    width: 100%;
-    padding: 10px;
-    margin-top: 8px;
-    box-sizing: border-box;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-}
-
-button{
-    background: green;
-    color: white;
-    border: none;
-    cursor: pointer;
-}
-
-.delete-btn{
-    background: red;
-}
-
-.card{
-    background: white;
-    border-radius: 10px;
-    padding: 15px;
-    margin-top: 10px;
-    box-shadow: 0 0 5px rgba(0,0,0,0.1);
-}
-
-.status-red{
-    background: #ff4d4d;
+.status{
     color: white;
     text-align: center;
     padding: 15px;
+    font-size: 22px;
     border-radius: 10px;
+    margin-bottom: 20px;
 }
 
 .status-green{
     background: #28a745;
-    color: white;
-    text-align: center;
-    padding: 15px;
-    border-radius: 10px;
 }
 
-.slot{
-    font-size: 18px;
+.status-red{
+    background: #dc3545;
+}
+
+.card{
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+
+.schedule{
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+
+.schedule th{
+    background: #f0f0f0;
+    font-size: 22px;
+    text-align: left;
+    padding: 15px;
+    border: 1px solid #999;
+}
+
+.schedule td{
+    border: 1px solid #999;
+    padding: 20px;
+    font-size: 26px;
+}
+
+.time-cell{
+    width: 50%;
+}
+
+.band-name{
     font-weight: bold;
 }
 
-.name{
-    margin-top: 8px;
-    margin-bottom: 10px;
+input[type="text"]{
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    box-sizing: border-box;
 }
 
-.no-reservation{
-    text-align: center;
+input[type="date"]{
+    padding: 10px;
 }
+
+button{
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    cursor: pointer;
+    color: white;
+}
+
+.reserve-btn{
+    background: #28a745;
+}
+
+.delete-btn{
+    background: #dc3545;
+}
+
+form{
+    margin: 0;
+}
+
 </style>
+
+<meta http-equiv="refresh" content="60">
+
 </head>
 
 <body>
 
-<h1>部室予約</h1>
+<h1>部室予約システム</h1>
 
-<!-- ✅ リアルタイム使用状況 -->
+<!-- 使用状況 -->
 {% if in_use %}
-<div class="status-red">
-    <h2>🔴 使用中</h2>
-    <p>{{ current_user }} さんが利用中</p>
+<div class="status status-red">
+    🔴 使用中<br>
+    {{ current_user }}
 </div>
 {% else %}
-<div class="status-green">
-    <h2>🟢 空いています</h2>
+<div class="status status-green">
+    🟢 空いています
 </div>
 {% endif %}
 
-<!-- ================= -->
-<!-- 予約フォーム -->
-<!-- ================= -->
-<h2>予約する</h2>
-
-<form action="/add" method="post">
-
-    名前
-    <input type="text" name="name" required>
-
-    日付
-    <input type="date" name="date" value="{{ selected_date }}" required>
-
-    時間帯
-    <select name="slot">
-        {% for s in slots %}
-        <option value="{{ s }}">{{ s }}</option>
-        {% endfor %}
-    </select>
-
-    <button type="submit">予約する</button>
-
-</form>
-
-<!-- ================= -->
-<!-- 日付検索 -->
-<!-- ================= -->
-<h2>予約確認</h2>
+<!-- 日付選択 -->
+<div class="card">
 
 <form method="get">
 
-    日付
+    <label>日付選択</label>
+
+    <br><br>
+
     <input
         type="date"
         name="date"
@@ -146,47 +143,107 @@ button{
 
 </form>
 
-<h3>
-    {{ selected_date }}（{{ selected_day }}）の予約
-</h3>
-
-<!-- ================= -->
-<!-- 予約一覧 -->
-<!-- ================= -->
-
-{% if reservations %}
-
-    {% for r in reservations %}
-
-    <div class="card">
-
-        <!-- ✅ 日本語キー対応（ここ重要） -->
-        <div class="slot">{{ r["スロット"] }}</div>
-
-        <div class="name">{{ r["名前"] }}</div>
-
-        <form action="/delete" method="post">
-
-            <!-- ✅ 削除用（日本語キー） -->
-            <input type="hidden" name="date" value="{{ r["日付"] }}">
-            <input type="hidden" name="slot" value="{{ r["スロット"] }}">
-            <input type="hidden" name="name" value="{{ r["名前"] }}">
-
-            <button class="delete-btn">取消</button>
-
-        </form>
-
-    </div>
-
-    {% endfor %}
-
-{% else %}
-
-<div class="card no-reservation">
-    この日の予約はありません
 </div>
 
-{% endif %}
+<!-- 時間割表 -->
+<div class="card">
+
+<h2>
+{{ selected_date }}（{{ selected_day }}）
+</h2>
+
+<table class="schedule">
+
+<tr>
+    <th>時間帯</th>
+    <th>バンド名</th>
+</tr>
+
+{% for item in slot_status %}
+
+<tr>
+
+    <td class="time-cell">
+
+        {% if loop.index == 1 %}
+            1　{{ item.slot.replace("-", "～") }}
+
+        {% elif loop.index == 2 %}
+            2　{{ item.slot.replace("-", "～") }}
+
+        {% elif loop.index == 3 %}
+            昼　{{ item.slot.replace("-", "～") }}
+
+        {% elif loop.index == 4 %}
+            3　{{ item.slot.replace("-", "～") }}
+
+        {% elif loop.index == 5 %}
+            4　{{ item.slot.replace("-", "～") }}
+
+        {% elif loop.index == 6 %}
+            5　{{ item.slot.replace("-", "～") }}
+
+        {% elif loop.index == 7 %}
+            6　{{ item.slot.replace("-", "～") }}
+
+        {% elif loop.index == 8 %}
+            7　{{ item.slot.replace("-", "～") }}
+
+        {% endif %}
+
+    </td>
+
+    <td>
+
+        {% if item.reserved %}
+
+            <div class="band-name">
+                {{ item.name }}
+            </div>
+
+        {% else %}
+
+            " method="post">
+
+                <input
+                    type="hidden"
+                    name="date"
+                    value="{{ selected_date }}">
+
+                <input
+                    type="hidden"
+                    name="slot"
+                    value="{{ item.slot }}">
+
+                <input
+                    type="text"
+                    name="name"
+                    placeholder="バンド名"
+                    required>
+
+                <br><br>
+
+                <button
+                    type="submit"
+                    class="reserve-btn">
+
+                    予約
+
+                </button>
+
+            </form>
+
+        {% endif %}
+
+    </td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+</div>
 
 </body>
 </html>
