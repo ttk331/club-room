@@ -27,6 +27,7 @@ except Exception as e:
     print("❌ MongoDB接続エラー:", e)
     collection = None
 
+
 # --------------------------
 # 時間帯
 # --------------------------
@@ -45,6 +46,7 @@ WEEKDAYS = [
     "月", "火", "水",
     "木", "金", "土", "日"
 ]
+
 
 # --------------------------
 # メイン画面
@@ -114,6 +116,10 @@ def index():
             )
         )
 
+        print("予約データ")
+        for r in reservations:
+            print(r)
+
         reservations.sort(
             key=lambda x:
             datetime.strptime(
@@ -166,7 +172,12 @@ def index():
             if start_time <= now_time < end_time:
 
                 in_use = True
-                current_user = r["名称"]
+
+                current_user = (
+                    r.get("名称")
+                    or r.get("名前", "")
+                )
+
                 break
 
         except Exception as e:
@@ -193,7 +204,10 @@ def index():
             slot_status.append({
                 "slot": slot,
                 "reserved": True,
-                "name": reservation["名称"]
+                "name": (
+                    reservation.get("名称")
+                    or reservation.get("名前", "")
+                )
             })
 
         else:
@@ -212,6 +226,7 @@ def index():
         in_use=in_use,
         current_user=current_user
     )
+
 
 # --------------------------
 # 予約追加
@@ -264,6 +279,7 @@ def add():
         "/?date=" + date
     )
 
+
 # --------------------------
 # 削除
 # --------------------------
@@ -282,7 +298,10 @@ def delete():
         collection.delete_one({
             "日付": date,
             "スロット": slot,
-            "名称": name
+            "$or": [
+                {"名称": name},
+                {"名前": name}
+            ]
         })
 
     except Exception as e:
@@ -292,12 +311,14 @@ def delete():
         "/?date=" + date
     )
 
+
 # --------------------------
 # ヘルスチェック
 # --------------------------
 @app.route("/health")
 def health():
     return "OK"
+
 
 # --------------------------
 # 起動
