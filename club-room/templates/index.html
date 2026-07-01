@@ -9,99 +9,91 @@
 <style>
 
 body{
-    font-family: "Yu Gothic", sans-serif;
-    max-width: 1000px;
-    margin: auto;
-    padding: 20px;
-    background-color: #f5f5f5;
+    font-family:"Yu Gothic",sans-serif;
+    max-width:1000px;
+    margin:auto;
+    padding:20px;
+    background:#f5f5f5;
 }
 
 h1{
-    text-align: center;
+    text-align:center;
 }
 
 .status{
-    color: white;
-    text-align: center;
-    padding: 15px;
-    font-size: 22px;
-    border-radius: 10px;
-    margin-bottom: 20px;
+    text-align:center;
+    color:white;
+    padding:15px;
+    border-radius:10px;
+    margin-bottom:20px;
+    font-size:22px;
 }
 
 .status-green{
-    background: #28a745;
+    background:#28a745;
 }
 
 .status-red{
-    background: #dc3545;
+    background:#dc3545;
 }
 
 .card{
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    margin-bottom:20px;
+    box-shadow:0 0 5px rgba(0,0,0,0.1);
 }
 
 .schedule{
-    width: 100%;
-    border-collapse: collapse;
-    background: white;
+    width:100%;
+    border-collapse:collapse;
 }
 
 .schedule th{
-    background: #f0f0f0;
-    font-size: 22px;
-    text-align: left;
-    padding: 15px;
-    border: 1px solid #999;
+    background:#f0f0f0;
 }
 
+.schedule th,
 .schedule td{
-    border: 1px solid #999;
-    padding: 20px;
-    font-size: 26px;
+    border:1px solid #999;
+    padding:15px;
+    text-align:center;
 }
 
 .time-cell{
-    width: 50%;
+    width:40%;
+    font-size:20px;
 }
 
 .band-name{
-    font-weight: bold;
+    font-size:22px;
+    font-weight:bold;
+    color:#0066cc;
 }
 
 input[type="text"]{
-    width: 100%;
-    padding: 10px;
-    margin-top: 10px;
-    box-sizing: border-box;
+    width:90%;
+    padding:8px;
+    margin-bottom:10px;
+    box-sizing:border-box;
 }
 
 input[type="date"]{
-    padding: 10px;
-}
-
-button{
-    border: none;
-    border-radius: 8px;
-    padding: 10px 20px;
-    cursor: pointer;
-    color: white;
+    padding:8px;
 }
 
 .reserve-btn{
-    background: #28a745;
+    background:#28a745;
+    color:white;
+    border:none;
+    border-radius:8px;
+    padding:10px 20px;
+    cursor:pointer;
 }
 
-.delete-btn{
-    background: #dc3545;
-}
-
-form{
-    margin: 0;
+.reserve-btn:hover{
+    opacity:0.8;
 }
 
 </style>
@@ -109,12 +101,10 @@ form{
 <meta http-equiv="refresh" content="60">
 
 </head>
-
 <body>
 
-<h1>部室予約システム</h1>
+<h1>🎸 部室予約システム</h1>
 
-<!-- 使用状況 -->
 {% if in_use %}
 <div class="status status-red">
     🔴 使用中<br>
@@ -126,26 +116,24 @@ form{
 </div>
 {% endif %}
 
-<!-- 日付選択 -->
 <div class="card">
 
-<form method="get">
+    <form method="get">
 
-    <label>日付選択</label>
+        <label>日付選択</label>
 
-    <br><br>
+        <br><br>
 
-    <input
-        type="date"
-        name="date"
-        value="{{ selected_date }}"
-        onchange="this.form.submit()">
+        <input
+            type="date"
+            name="date"
+            value="{{ selected_date }}"
+            onchange="this.form.submit()">
 
-</form>
+    </form>
 
 </div>
 
-<!-- 時間割表 -->
 <div class="card">
 
 <h2>
@@ -156,7 +144,7 @@ form{
 
 <tr>
     <th>時間帯</th>
-    <th>バンド名</th>
+    <th>予約状況</th>
 </tr>
 
 {% for item in slot_status %}
@@ -166,28 +154,28 @@ form{
     <td class="time-cell">
 
         {% if loop.index == 1 %}
-            1　{{ item.slot.replace("-", "～") }}
+            1限　{{ item.slot.replace("-", " ～ ") }}
 
         {% elif loop.index == 2 %}
-            2　{{ item.slot.replace("-", "～") }}
+            2限　{{ item.slot.replace("-", " ～ ") }}
 
         {% elif loop.index == 3 %}
-            昼　{{ item.slot.replace("-", "～") }}
+            昼休み　{{ item.slot.replace("-", " ～ ") }}
 
         {% elif loop.index == 4 %}
-            3　{{ item.slot.replace("-", "～") }}
+            3限　{{ item.slot.replace("-", " ～ ") }}
 
         {% elif loop.index == 5 %}
-            4　{{ item.slot.replace("-", "～") }}
+            4限　{{ item.slot.replace("-", " ～ ") }}
 
         {% elif loop.index == 6 %}
-            5　{{ item.slot.replace("-", "～") }}
+            5限　{{ item.slot.replace("-", " ～ ") }}
 
         {% elif loop.index == 7 %}
-            6　{{ item.slot.replace("-", "～") }}
+            6限　{{ item.slot.replace("-", " ～ ") }}
 
         {% elif loop.index == 8 %}
-            7　{{ item.slot.replace("-", "～") }}
+            7限　{{ item.slot.replace("-", " ～ ") }}
 
         {% endif %}
 
@@ -203,7 +191,7 @@ form{
 
         {% else %}
 
-            " method="post">
+            <form action="/add" method="post">
 
                 <input
                     type="hidden"
@@ -221,7 +209,7 @@ form{
                     placeholder="バンド名"
                     required>
 
-                <br><br>
+                <br>
 
                 <button
                     type="submit"
