@@ -234,7 +234,11 @@ def add():
     name = request.form.get("name")
     date = request.form.get("date")
     slot = request.form.get("slot")
-
+　　
+　　# 開発者設定
+　　if name == "開発者設定":
+   　　 return redirect("/admin")
+    
     if not (
         name and
         date and
@@ -320,6 +324,38 @@ def delete():
 @app.route("/health")
 def health():
     return "OK"
+
+@app.route("/admin")
+def admin():
+
+    reservations = list(
+        collection.find({}, {"_id": 0})
+    )
+
+    reservations.sort(
+        key=lambda x: (
+            x.get("日付", ""),
+            x.get("スロット", "")
+        )
+    )
+
+    return render_template(
+        "admin.html",
+        reservations=reservations
+    )
+
+@app.route("/admin_delete", methods=["POST"])
+def admin_delete():
+
+    date = request.form.get("date")
+    slot = request.form.get("slot")
+
+    collection.delete_one({
+        "日付": date,
+        "スロット": slot
+    })
+
+    return redirect("/admin")
 
 # --------------------------
 # 起動
