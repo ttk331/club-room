@@ -20,6 +20,7 @@ try:
 
     db = client["clubroom"]
     collection = db["reservations"]
+    comments_collection = db["comments"]
 
     print("✅ MongoDB接続成功")
 
@@ -321,6 +322,23 @@ def delete():
 # --------------------------
 # ヘルスチェック
 # --------------------------
+@app.route("/save_comment", methods=["POST"])
+def save_comment():
+
+    date = request.form.get("date")
+    comment = request.form.get("comment")
+
+    comments_collection.delete_many({
+        "日付": date
+    })
+
+    comments_collection.insert_one({
+        "日付": date,
+        "コメント": comment
+    })
+
+    return redirect("/admin")
+    
 @app.route("/health")
 def health():
     return "OK"
