@@ -179,6 +179,19 @@ def index():
 
         except Exception as e:
             print("時間判定エラー:", e)
+            
+    # --------------------------
+    # 鍵の場所取得
+    # --------------------------
+    key_status = "未設定"
+
+    key_data = key_collection.find_one()
+
+    if key_data:
+        key_status = key_data.get(
+            "status",
+            "未設定"
+        )
 
     
     # --------------------------
@@ -240,6 +253,7 @@ def index():
     current_user=current_user,
     today=now.strftime("%Y-%m-%d"),
     comment_text=comment_text
+    key_status=key_status
 )
 
 # --------------------------
