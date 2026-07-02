@@ -108,6 +108,31 @@ button{
 
 <hr>
 
+<h2>現在のお知らせ一覧</h2>
+
+<table>
+
+<tr>
+    <th>日付</th>
+    <th>コメント</th>
+</tr>
+
+{% for c in comments %}
+
+<tr>
+    <td>{{ c["日付"] }}</td>
+
+    <td>{{ c["コメント"] }}</td>
+</tr>
+
+{% endfor %}
+
+</table>
+
+<br>
+<hr>
+<br>
+
 <table>
 
 <tr>
