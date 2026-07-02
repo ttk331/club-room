@@ -252,7 +252,7 @@ def index():
     in_use=in_use,
     current_user=current_user,
     today=now.strftime("%Y-%m-%d"),
-    comment_text=comment_text
+    comment_text=comment_text,
     key_status=key_status
 )
 
