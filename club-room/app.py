@@ -383,7 +383,7 @@ def update_key():
         "status": status
     })
 
-    return redirect("/admin")
+    return redirect("/")
 
 @app.route("/delete_comment", methods=["POST"])
 def delete_comment():
