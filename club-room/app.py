@@ -21,6 +21,7 @@ try:
     db = client["clubroom"]
     collection = db["reservations"]
     comments_collection = db["comments"]
+    key_collection = db["key_status"]
 
     print("✅ MongoDB接続成功")
 
@@ -353,6 +354,19 @@ def save_comment():
     comments_collection.insert_one({
         "日付": date,
         "コメント": comment
+    })
+
+    return redirect("/admin")
+
+@app.route("/update_key", methods=["POST"])
+def update_key():
+
+    status = request.form.get("status")
+
+    key_collection.delete_many({})
+
+    key_collection.insert_one({
+        "status": status
     })
 
     return redirect("/admin")
