@@ -61,6 +61,34 @@ button{
 
 <h1>管理画面</h1>
 
+<h2>お知らせ登録</h2>
+
+<form action="/save_comment" method="post">
+
+    <input
+        type="date"
+        name="date"
+        required>
+
+    <br><br>
+
+    <textarea
+        name="comment"
+        rows="5"
+        cols="50"
+        placeholder="コメントを入力してください"
+        required></textarea>
+
+    <br><br>
+
+    <button type="submit">
+        保存
+    </button>
+
+</form>
+
+<hr>
+
 <table>
 
 <tr>
