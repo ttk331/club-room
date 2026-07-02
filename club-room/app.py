@@ -179,6 +179,23 @@ def index():
         except Exception as e:
             print("時間判定エラー:", e)
 
+    
+    # --------------------------
+    # コメント取得
+    # --------------------------
+    comment_text = ""
+
+    comment_data = comments_collection.find_one({
+        "日付": selected_date
+    })
+
+    if comment_data:
+        comment_text = comment_data.get(
+            "コメント",
+            ""
+        )
+
+
     # --------------------------
     # 表用データ
     # --------------------------
@@ -214,14 +231,15 @@ def index():
             })
 
     return render_template(
-        "index.html",
-        slot_status=slot_status,
-        selected_date=selected_date,
-        selected_day=selected_day,
-        in_use=in_use,
-        current_user=current_user,
-        today=now.strftime("%Y-%m-%d")
-    )
+    "index.html",
+    slot_status=slot_status,
+    selected_date=selected_date,
+    selected_day=selected_day,
+    in_use=in_use,
+    current_user=current_user,
+    today=now.strftime("%Y-%m-%d"),
+    comment_text=comment_text
+)
 
 # --------------------------
 # 予約追加
