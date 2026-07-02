@@ -117,6 +117,20 @@ input[type="date"]{
 </div>
 {% endif %}
 
+{% if comment_text %}
+
+<div class="card">
+
+    <h2>📢 お知らせ</h2>
+
+    <p>
+        {{ comment_text }}
+    </p>
+
+</div>
+
+{% endif %}
+
 <!-- 日付選択 -->
 
 <div class="card">
