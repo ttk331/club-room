@@ -379,6 +379,10 @@ def admin():
         collection.find({}, {"_id": 0})
     )
 
+    comments = list(
+        comments_collection.find({}, {"_id": 0})
+    )
+
     reservations.sort(
         key=lambda x: (
             x.get("日付", ""),
@@ -388,7 +392,8 @@ def admin():
 
     return render_template(
         "admin.html",
-        reservations=reservations
+        reservations=reservations,
+        comments=comments
     )
 
 @app.route("/admin_delete", methods=["POST"])
