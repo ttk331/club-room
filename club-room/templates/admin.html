@@ -63,7 +63,7 @@ button{
 
 <h2>全体お知らせ</h2>
 
-/save_global_notice
+<form action="/save_global_notice" method="post">
 
     <textarea
         name="notice"
@@ -82,7 +82,9 @@ button{
 
 <br>
 
-<form action="/delete_globalbutton type="submit">
+<form action="/delete_global_notice" method="post">
+
+    <button type="submit">
         全体お知らせ削除
     </button>
 
