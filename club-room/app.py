@@ -195,10 +195,9 @@ def index():
             "status",
             "未設定"
         )
-
     
     # --------------------------
-    # コメント取得
+    # コメント取得①
     # --------------------------
     comment_text = ""
 
@@ -212,7 +211,20 @@ def index():
             ""
         )
 
+    # --------------------------
+    # コメント取得②
+    # --------------------------
 
+    global_notice = ""
+
+    notice_data = global_notice_collection.find_one()
+
+    if notice_data:
+        global_notice = notice_data.get(
+            "notice",
+            ""
+        )
+    
     # --------------------------
     # 表用データ
     # --------------------------
@@ -256,7 +268,8 @@ def index():
     current_user=current_user,
     today=now.strftime("%Y-%m-%d"),
     comment_text=comment_text,
-    key_status=key_status
+    key_status=key_status,
+    global_notice=global_notice
 )
 
 # --------------------------
