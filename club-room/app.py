@@ -78,7 +78,21 @@ def index():
 
     except Exception as e:
         print("削除エラー:", e)
-    
+
+    # --------------------------
+    # 過去のお知らせ削除
+    # --------------------------
+    try:
+
+        comments_collection.delete_many({
+            "日付": {
+                "$lt": today_str
+            }
+        })
+
+    except Exception as e:
+        print("お知らせ削除エラー:", e)
+        
     # --------------------------
     # 日付取得
     # --------------------------
@@ -361,7 +375,7 @@ def delete():
     return redirect(
         "/?date=" + date
     )
-
+    
 # --------------------------
 # ヘルスチェック
 # --------------------------
