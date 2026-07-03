@@ -64,23 +64,21 @@ def index():
     now = datetime.utcnow() + timedelta(hours=9)
 
     # --------------------------
-    # 7日前より古い予約削除
+    # 昨日以前の予約削除
     # --------------------------
     try:
 
-        limit_date = (
-            now - timedelta(days=7)
-        ).strftime("%Y-%m-%d")
+        today_str = now.strftime("%Y-%m-%d")
 
         collection.delete_many({
             "日付": {
-                "$lt": limit_date
+                "$lt": today_str
             }
         })
 
     except Exception as e:
         print("削除エラー:", e)
-
+    
     # --------------------------
     # 日付取得
     # --------------------------
