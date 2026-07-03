@@ -255,6 +255,22 @@ input[type="date"]{
         placeholder="バンド名"
         required>
 
+    <select name="item">
+
+    <option value="">
+        機材選択
+    </option>
+
+    {% for item_name in personal_items %}
+
+    <option value="{{ item_name }}">
+        {{ item_name }}
+    </option>
+
+    {% endfor %}
+
+</select>
+
     <br>
 
     <button
