@@ -248,29 +248,23 @@ def index():
     # --------------------------
     # 表用データ
     # --------------------------
+
     slot_status = []
 
     for slot in SLOTS:
 
-        reservation = next(
-            (
-                r
-                for r in reservations
-                if r["スロット"] == slot
-            ),
-            None
-        )
+        slot_reservations = [
+            r
+            for r in reservations
+            if r["スロット"] == slot
+        ]
 
-        if reservation:
+        if slot_reservations:
 
             slot_status.append({
                 "slot": slot,
                 "reserved": True,
-                "name":
-                    reservation.get("名称")
-                    or reservation.get("名前", ""),
-                "item":
-                    reservation.get("機材", "")
+                "reservations": slot_reservations
             })
 
         else:
@@ -278,8 +272,7 @@ def index():
             slot_status.append({
                 "slot": slot,
                 "reserved": False,
-                "name": "",
-                "item": ""
+                "reservations": []
             })
 
     return render_template(
@@ -337,13 +330,26 @@ def add():
 
     try:
 
-        exists = collection.find_one({
-            "日付": date,
-            "スロット": slot
-        })
+        if name == "個人練":
 
-        if exists:
-            return "その時間帯は予約済みです"
+            exists = collection.find_one({
+                "日付": date,
+                "スロット": slot,
+                "機材": item
+            })
+
+            if exists:
+                return "その機材は使用中です"
+
+        else:
+
+            exists = collection.find_one({
+                "日付": date,
+                "スロット": slot
+            })
+
+            if exists:
+                return "その時間帯は予約済みです"
 
         collection.insert_one({
             "id": str(
