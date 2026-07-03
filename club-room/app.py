@@ -24,6 +24,7 @@ try:
     comments_collection = db["comments"]
     key_collection = db["key_status"]
     board_collection = db["board"]
+    global_notice_collection = db["global_notice"]
 
     print("✅ MongoDB接続成功")
 
@@ -366,6 +367,19 @@ def save_comment():
     comments_collection.insert_one({
         "日付": date,
         "コメント": comment
+    })
+
+    return redirect("/admin")
+
+@app.route("/save_global_notice", methods=["POST"])
+def save_global_notice():
+
+    notice = request.form.get("notice")
+
+    global_notice_collection.delete_many({})
+
+    global_notice_collection.insert_one({
+        "notice": notice
     })
 
     return redirect("/admin")
