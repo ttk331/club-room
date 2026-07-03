@@ -264,12 +264,19 @@ input[type="date"]{
         value="{{ item.slot }}">
 
     <input
-        type="text"
-        name="name"
-        placeholder="バンド名"
-        required>
+    type="text"
+    name="name"
+    placeholder="バンド名（個人練）"
+    required
+    oninput="
+        this.parentElement.querySelector('.item-select').style.display =
+        this.value == '個人練' ? 'inline' : 'none';
+    ">
 
-    <select name="item">
+<select
+    name="item"
+    class="item-select"
+    style="display:none;">
 
     <option value="">
         機材選択
