@@ -440,18 +440,6 @@ def delete_comment():
 
     return redirect("/admin")
 
-@app.route("/delete_comment", methods=["POST"])
-def delete_comment():
-
-    date = request.form.get("date")
-
-    comments_collection.delete_many({
-        "日付": date
-    })
-
-    return redirect("/admin")
-
-
 @app.route("/delete_global_notice", methods=["POST"])
 def delete_global_notice():
 
