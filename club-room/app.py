@@ -428,7 +428,7 @@ def admin():
     )
 
     board_comments = list(
-    board_collection.find({}, {"_id": 0})
+    board_collection.find()
 )
 
     reservations.sort(
