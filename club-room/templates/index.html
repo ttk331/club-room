@@ -127,6 +127,21 @@ input[type="date"]{
 
 </div>
 
+{% if global_notice %}
+
+<div class="card">
+
+    <h2>📢 全体お知らせ</h2>
+
+    <p>
+        {{ global_notice }}
+    </p>
+
+</div>
+
+{% endif %}
+`
+
 {% if comment_text %}
 
 <div class="card">
