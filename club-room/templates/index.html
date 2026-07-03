@@ -284,7 +284,7 @@ input[type="date"]{
 
     {% for item_name in personal_items %}
 
-        {% if item_name not in used_items %}
+       {% if item_name not in item.used_items %}
 
             <option value="{{ item_name }}">
                 {{ item_name }}
