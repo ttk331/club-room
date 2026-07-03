@@ -332,6 +332,9 @@ def add():
 
         if name == "個人練":
 
+            if not item:
+                return "機材を選択してください"
+
             exists = collection.find_one({
                 "日付": date,
                 "スロット": slot,
