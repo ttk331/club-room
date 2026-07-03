@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect
 from pymongo import MongoClient
+from bson import ObjectId
 from datetime import datetime, timedelta
 import os
 
@@ -454,6 +455,17 @@ def admin_delete():
     collection.delete_one({
         "日付": date,
         "スロット": slot
+    })
+
+    return redirect("/admin")
+
+@app.route("/delete_board_comment", methods=["POST"])
+def delete_board_comment():
+
+    comment_id = request.form.get("id")
+
+    board_collection.delete_one({
+        "_id": ObjectId(comment_id)
     })
 
     return redirect("/admin")
