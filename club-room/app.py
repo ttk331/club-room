@@ -428,6 +428,10 @@ def admin():
         comments_collection.find({}, {"_id": 0})
     )
 
+    board_comments = list(
+    board_collection.find({}, {"_id": 0})
+)
+
     reservations.sort(
         key=lambda x: (
             x.get("日付", ""),
