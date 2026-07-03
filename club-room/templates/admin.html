@@ -88,44 +88,52 @@ button{
 </form>
 
 <hr>
-
 <h2>お知らせ削除</h2>
-
-<form action="/delete_comment" method="post">
-
-    <input
-        type="date"
-        name="date"
-        required>
-
-    <br><br>
-
-    <button type="submit">
-        お知らせ削除
-    </button>
-
-</form>
-
-<br>
 
 <table>
 
 <tr>
     <th>日付</th>
     <th>コメント</th>
+    <th>削除</th>
 </tr>
 
 {% for c in comments %}
 
 <tr>
+
     <td>{{ c["日付"] }}</td>
 
     <td>{{ c["コメント"] }}</td>
+
+    <td>
+
+        /delete_comment
+
+            <input
+                type="hidden"
+                name="date"
+                value="{{ c['日付'] }}">
+
+            <button type="submit">
+                削除
+            </button>
+
+        </form>
+
+    </td>
+
 </tr>
 
 {% endfor %}
 
 </table>
+</tr>
+
+{% endfor %}
+
+</table>
+
 
 <br>
 <hr>
