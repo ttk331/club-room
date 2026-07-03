@@ -22,6 +22,7 @@ try:
     collection = db["reservations"]
     comments_collection = db["comments"]
     key_collection = db["key_status"]
+    board_collection = db["board"]
 
     print("✅ MongoDB接続成功")
 
@@ -371,6 +372,22 @@ def save_comment():
     })
 
     return redirect("/admin")
+
+@app.route("/add_board_comment", methods=["POST"])
+def add_board_comment():
+
+    comment = request.form.get("comment")
+
+    if comment:
+
+        board_collection.insert_one({
+            "comment": comment,
+            "time": datetime.now().strftime(
+                "%Y-%m-%d %H:%M"
+            )
+        })
+
+    return redirect("/")
 
 @app.route("/update_key", methods=["POST"])
 def update_key():
