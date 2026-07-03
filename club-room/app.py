@@ -261,10 +261,21 @@ def index():
 
         if slot_reservations:
 
+            used_items = []
+
+            for r in slot_reservations:
+
+                if r.get("機材"):
+
+                    used_items.append(
+                        r.get("機材")
+                    )
+
             slot_status.append({
                 "slot": slot,
                 "reserved": True,
-                "reservations": slot_reservations
+                "reservations": slot_reservations,
+                "used_items": used_items
             })
 
         else:
@@ -272,18 +283,11 @@ def index():
             slot_status.append({
                 "slot": slot,
                 "reserved": False,
-                "reservations": []
+                "reservations": [],
+                "used_items": []
             })
 
     used_items = []
-
-    for r in reservations:
-
-        if r.get("機材"):
-
-            used_items.append(
-                r.get("機材")
-            )
 
     return render_template(
         "index.html",
@@ -296,8 +300,7 @@ def index():
         comment_text=comment_text,
         key_status=key_status,
         global_notice=global_notice,
-        personal_items=PERSONAL_ITEMS,
-        used_items=used_items
+        personal_items=PERSONAL_ITEMS
     )
 
 # --------------------------
