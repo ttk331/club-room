@@ -231,17 +231,23 @@ input[type="date"]{
 
 {% if item.reserved %}
 
+{% for r in item.reservations %}
+
 <div class="band-name">
-    {{ item.name }}
+    {{ r.get("名称") or r.get("名前", "") }}
 </div>
 
-{% if item.name == "個人練" and item.item %}
+{% if r.get("機材") %}
 
 <div>
-    使用機材：{{ item.item }}
+    使用機材：{{ r.get("機材") }}
 </div>
 
 {% endif %}
+
+<hr>
+
+{% endfor %}
 
 {% else %}
 
