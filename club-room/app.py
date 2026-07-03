@@ -270,10 +270,6 @@ def add():
     date = request.form.get("date")
     slot = request.form.get("slot")
 
-    # 開発者設定
-    if name == "開発者設定":
-        return redirect("/admin")
-
     if not (
         name and
         date and
@@ -377,6 +373,9 @@ def save_comment():
 def add_board_comment():
 
     comment = request.form.get("comment")
+
+    if comment == "開発者設定":
+        return redirect("/admin")
 
     if comment:
 
