@@ -287,8 +287,6 @@ def index():
                 "used_items": []
             })
 
-    used_items = []
-
     return render_template(
         "index.html",
         slot_status=slot_status,
