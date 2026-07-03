@@ -134,6 +134,33 @@ button{
 <hr>
 <br>
 
+<h2>投稿コメント一覧</h2>
+
+<table>
+
+<tr>
+    <th>投稿時刻</th>
+    <th>コメント</th>
+</tr>
+
+{% for b in board_comments %}
+
+<tr>
+
+    <td>{{ b["time"] }}</td>
+
+    <td>{{ b["comment"] }}</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+<br>
+<hr>
+<br>
+    
 <h2>予約削除</h2>
 
 <table>
