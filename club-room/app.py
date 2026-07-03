@@ -442,7 +442,8 @@ def admin():
     return render_template(
         "admin.html",
         reservations=reservations,
-        comments=comments
+        comments=comments,
+        board_comments=board_comments
     )
 
 @app.route("/admin_delete", methods=["POST"])
