@@ -268,7 +268,9 @@ def index():
                 "reserved": True,
                 "name":
                     reservation.get("名称")
-                    or reservation.get("名前", "")
+                    or reservation.get("名前", ""),
+                "item":
+                    reservation.get("機材", "")
             })
 
         else:
@@ -276,21 +278,23 @@ def index():
             slot_status.append({
                 "slot": slot,
                 "reserved": False,
-                "name": ""
+                "name": "",
+                "item": ""
             })
 
     return render_template(
-    "index.html",
-    slot_status=slot_status,
-    selected_date=selected_date,
-    selected_day=selected_day,
-    in_use=in_use,
-    current_user=current_user,
-    today=now.strftime("%Y-%m-%d"),
-    comment_text=comment_text,
-    key_status=key_status,
-    global_notice=global_notice
-)
+        "index.html",
+        slot_status=slot_status,
+        selected_date=selected_date,
+        selected_day=selected_day,
+        in_use=in_use,
+        current_user=current_user,
+        today=now.strftime("%Y-%m-%d"),
+        comment_text=comment_text,
+        key_status=key_status,
+        global_notice=global_notice,
+        personal_items=PERSONAL_ITEMS
+    )
 
 # --------------------------
 # 予約追加
@@ -304,6 +308,7 @@ def add():
     name = request.form.get("name")
     date = request.form.get("date")
     slot = request.form.get("slot")
+    item = request.form.get("item")
 
     if not (
         name and
@@ -316,6 +321,9 @@ def add():
         date.replace("/", "-")
         .strip()
     )
+
+    if name != "個人練":
+        item = ""
 
     # --------------------------
     # 過去日予約禁止
@@ -343,7 +351,8 @@ def add():
             ),
             "名称": name,
             "日付": date,
-            "スロット": slot
+            "スロット": slot,
+            "機材": item
         })
 
     except Exception as e:
@@ -483,8 +492,8 @@ def admin():
     )
 
     board_comments = list(
-    board_collection.find()
-)
+        board_collection.find()
+    )
 
     reservations.sort(
         key=lambda x: (
