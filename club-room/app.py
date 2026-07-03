@@ -275,6 +275,16 @@ def index():
                 "reservations": []
             })
 
+    used_items = []
+
+    for r in reservations:
+
+        if r.get("機材"):
+
+            used_items.append(
+                r.get("機材")
+            )
+
     return render_template(
         "index.html",
         slot_status=slot_status,
@@ -286,7 +296,8 @@ def index():
         comment_text=comment_text,
         key_status=key_status,
         global_notice=global_notice,
-        personal_items=PERSONAL_ITEMS
+        personal_items=PERSONAL_ITEMS,
+        used_items=used_items
     )
 
 # --------------------------
