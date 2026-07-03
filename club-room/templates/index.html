@@ -232,8 +232,16 @@ input[type="date"]{
 {% if item.reserved %}
 
 <div class="band-name">
- {{ item.name }}
+    {{ item.name }}
 </div>
+
+{% if item.name == "個人練" and item.item %}
+
+<div>
+    使用機材：{{ item.item }}
+</div>
+
+{% endif %}
 
 {% else %}
 
