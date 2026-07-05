@@ -312,6 +312,82 @@ button{
 {% endfor %}
 
 </table>
+    
+<br>
+<hr>
+<br>
+
+<h2>バンド申請一覧</h2>
+
+<button
+    type="button"
+    onclick="
+        const area =
+            document.getElementById('bandApplications');
+
+        area.style.display =
+            area.style.display === 'none'
+            ? 'block'
+            : 'none';
+    ">
+    表示
+</button>
+
+<br><br>
+
+<div
+    id="bandApplications"
+    style="display:none;">
+
+    <table>
+
+        <tr>
+            <th>投稿時刻</th>
+            <th>バンド名</th>
+            <th>ボーカル</th>
+            <th>リード</th>
+            <th>バッキング</th>
+            <th>ベース</th>
+            <th>キーボード</th>
+            <th>ドラム</th>
+            <th>その他</th>
+        </tr>
+
+        {% for b in board_comments %}
+
+            {% if b["comment"] == "バンド申請" %}
+
+            <tr>
+
+                <td>{{ b["time"] }}</td>
+
+                <td>{{ b.get("band_name", "") }}</td>
+
+                <td>{{ b.get("vocal", "") }}</td>
+
+                <td>{{ b.get("lead", "") }}</td>
+
+                <td>{{ b.get("backing", "") }}</td>
+
+                <td>{{ b.get("bass", "") }}</td>
+
+                <td>{{ b.get("keyboard", "") }}</td>
+
+                <td>{{ b.get("drums", "") }}</td>
+
+                <td>{{ b.get("other", "") }}</td>
+
+            </tr>
+
+            {% endif %}
+
+        {% endfor %}
+
+    </table>
+
+</div>
+
+<br>
 
 <a class="back" href="/">
     予約画面へ戻る
