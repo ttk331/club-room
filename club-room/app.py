@@ -530,6 +530,23 @@ def add_board_comment():
 
     comment = request.form.get("comment")
 
+    setting = settings_collection.find_one()
+
+    band_apply_enabled = True
+
+    if setting:
+
+        band_apply_enabled = setting.get(
+            "band_apply_enabled",
+            True
+        )
+
+    if (
+        comment == "バンド申請"
+        and not band_apply_enabled
+    ):
+        return redirect("/")
+
     if comment == "開発者設定":
         return redirect("/admin")
 
@@ -656,21 +673,7 @@ def admin():
         board_comments=board_comments,
         band_apply_enabled=band_apply_enabled
     )
-
-    reservations.sort(
-        key=lambda x: (
-            x.get("日付", ""),
-            x.get("スロット", "")
-        )
-    )
-
-    return render_template(
-        "admin.html",
-        reservations=reservations,
-        comments=comments,
-        board_comments=board_comments
-    )
-
+    
 @app.route("/admin_delete", methods=["POST"])
 def admin_delete():
 
