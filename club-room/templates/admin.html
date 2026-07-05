@@ -291,6 +291,36 @@ button{
     id="bandApplications"
     style="display:none;">
 
+    <form action="/toggle_band_apply" method="post">
+
+        {% if band_apply_enabled %}
+
+            <input
+                type="hidden"
+                name="enabled"
+                value="false">
+
+            <button type="submit">
+                バンド申請 OFF
+            </button>
+
+        {% else %}
+
+            <input
+                type="hidden"
+                name="enabled"
+                value="true">
+
+            <button type="submit">
+                バンド申請 ON
+            </button>
+
+        {% endif %}
+
+    </form>
+
+    <br>
+
     <table>
 
         <tr>
