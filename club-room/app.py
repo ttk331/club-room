@@ -25,6 +25,7 @@ try:
     key_collection = db["key_status"]
     board_collection = db["board"]
     global_notice_collection = db["global_notice"]
+    settings_collection = db["settings"]
 
     print("✅ MongoDB接続成功")
 
@@ -648,6 +649,22 @@ def delete_board_comment():
 
     board_collection.delete_one({
         "_id": ObjectId(comment_id)
+    })
+
+    return redirect("/admin")
+
+@app.route("/toggle_band_apply", methods=["POST"])
+def toggle_band_apply():
+
+    enabled = (
+        request.form.get("enabled")
+        == "true"
+    )
+
+    settings_collection.delete_many({})
+
+    settings_collection.insert_one({
+        "band_apply_enabled": enabled
     })
 
     return redirect("/admin")
