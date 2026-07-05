@@ -516,10 +516,47 @@ def add_board_comment():
     if comment == "開発者設定":
         return redirect("/admin")
 
-    if comment:
+    if comment == "バンド申請":
 
         board_collection.insert_one({
+
             "comment": comment,
+
+            "band_name":
+                request.form.get("band_name", ""),
+
+            "vocal":
+                request.form.get("vocal", ""),
+
+            "lead":
+                request.form.get("lead", ""),
+
+            "backing":
+                request.form.get("backing", ""),
+
+            "bass":
+                request.form.get("bass", ""),
+
+            "keyboard":
+                request.form.get("keyboard", ""),
+
+            "drums":
+                request.form.get("drums", ""),
+
+            "other":
+                request.form.get("other", ""),
+
+            "time": datetime.now().strftime(
+                "%Y-%m-%d %H:%M"
+            )
+        })
+
+    elif comment:
+
+        board_collection.insert_one({
+
+            "comment": comment,
+
             "time": datetime.now().strftime(
                 "%Y-%m-%d %H:%M"
             )
