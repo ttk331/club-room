@@ -231,67 +231,74 @@ input[type="date"]{
 
 {% if item.reserved %}
 
-{% for r in item.reservations %}
+    {% for r in item.reservations %}
 
-<div class="band-name">
-    {{ r.get("名称") or r.get("名前", "") }}
-</div>
+        <div class="band-name">
+            {{ r.get("名称") or r.get("名前", "") }}
+        </div>
 
-{% for device in r.get("機材", []) %}
+        {% if r.get("名称") == "個人練" or r.get("名前") == "個人練" %}
 
-<div>
-    使用機材：{{ device }}
-</div>
+            {% for device in r.get("機材", []) %}
 
-{% endfor %}
+                <div>
+                    使用機材：{{ device }}
+                </div>
 
-{% endfor %}
+            {% endfor %}
 
-{% if r.get("名称") == "個人練" or r.get("名前") == "個人練" %}
+        {% endif %}
 
-<form action="/add" method="post">
-    <input
-        type="hidden"
-        name="date"
-        value="{{ selected_date }}">
+        {% if r.get("名称") == "個人練" or r.get("名前") == "個人練" %}
 
-    <input
-        type="hidden"
-        name="slot"
-        value="{{ item.slot }}">
+        <form action="/add" method="post">
 
-    <input
-        type="hidden"
-        name="name"
-        value="個人練">
+            <input
+                type="hidden"
+                name="date"
+                value="{{ selected_date }}">
 
-    <select
-        name="items"
-        multiple
-        size="5">
+            <input
+                type="hidden"
+                name="slot"
+                value="{{ item.slot }}">
 
-        {% for item_name in personal_items %}
+            <input
+                type="hidden"
+                name="name"
+                value="個人練">
 
-            {% if item_name not in item.used_items %}
+            <select
+                name="items"
+                multiple
+                size="5">
 
-                <option value="{{ item_name }}">
-                    {{ item_name }}
-                </option>
+                {% for item_name in personal_items %}
 
-            {% endif %}
+                    {% if item_name not in item.used_items %}
 
-        {% endfor %}
+                        <option value="{{ item_name }}">
+                            {{ item_name }}
+                        </option>
 
-    </select>
+                    {% endif %}
 
-    <br><br>
+                {% endfor %}
 
-    <button type="submit">
-        機材追加
-    </button>
+            </select>
 
-</form>
-    
+            <br><br>
+
+            <button type="submit">
+                機材追加
+            </button>
+
+        </form>
+
+        {% endif %}
+
+    {% endfor %}
+
 {% else %}
 
 <form action="/add" method="post">
