@@ -411,6 +411,7 @@ input[type="date"]{
             oninput="toggleBandForm()"
             required></textarea>
 
+    {% if band_apply_enabled %}
         <div
             id="bandForm"
             style="display:none; margin-top:20px;">
@@ -492,6 +493,8 @@ input[type="date"]{
             </table>
 
         </div>
+
+        {% endif %}
 
         <br>
 
