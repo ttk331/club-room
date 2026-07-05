@@ -387,15 +387,55 @@ def add():
             if exists:
                 return "その時間帯は予約済みです"
 
-        collection.insert_one({
-            "id": str(
-                datetime.now().timestamp()
-            ),
-            "名称": name,
-            "日付": date,
-            "スロット": slot,
-            "機材": items
-        })
+        if name == "個人練":
+   
+            existing_personal = collection.find_one({
+                "日付": date,
+                "スロット": slot,
+                "$or": [
+                    {"名称": "個人練"},
+                    {"名前": "個人練"}
+                ]
+            })
+
+            if existing_personal:
+
+                collection.update_one(
+                    {
+                        "_id": existing_personal["_id"]
+                    },
+                    {
+                        "$addToSet": {
+                            "機材": {
+                                "$each": items
+                            }
+                        }
+                    }
+                )
+
+            else:
+
+                collection.insert_one({
+                    "id": str(
+                        datetime.now().timestamp()
+                    ),
+                    "名称": "個人練",
+                    "日付": date,
+                    "スロット": slot,
+                    "機材": items
+                })
+
+        else:
+
+            collection.insert_one({
+                "id": str(
+                    datetime.now().timestamp()
+                ),
+                "名称": name,
+                "日付": date,
+                "スロット": slot,
+                "機材": []
+            })
 
     except Exception as e:
         print("追加エラー:", e)
