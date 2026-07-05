@@ -181,7 +181,59 @@ button{
 
     <td>{{ b["time"] }}</td>
 
-    <td>{{ b["comment"] }}</td>
+    <td>
+
+    {% if b["comment"] == "バンド申請" %}
+
+        <b>バンド申請</b>
+
+        <br><br>
+
+        バンド名：
+        {{ b.get("band_name", "") }}
+
+        <br>
+
+        ボーカル：
+        {{ b.get("vocal", "") }}
+
+        <br>
+
+        リード：
+        {{ b.get("lead", "") }}
+
+        <br>
+
+        バッキング：
+        {{ b.get("backing", "") }}
+
+        <br>
+
+        ベース：
+        {{ b.get("bass", "") }}
+
+        <br>
+
+        キーボード：
+        {{ b.get("keyboard", "") }}
+
+        <br>
+
+        ドラム：
+        {{ b.get("drums", "") }}
+
+        <br>
+
+        その他：
+        {{ b.get("other", "") }}
+
+    {% else %}
+
+        {{ b["comment"] }}
+
+    {% endif %}
+
+</td>
 
     <td>
 
