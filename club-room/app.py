@@ -245,7 +245,22 @@ def index():
             "notice",
             ""
         )
-    
+
+    # --------------------------
+    # バンド申請設定
+    # --------------------------
+
+    band_apply_enabled = True
+
+    setting = settings_collection.find_one()
+
+    if setting:
+
+        band_apply_enabled = setting.get(
+            "band_apply_enabled",
+            True
+        )
+
     # --------------------------
     # 表用データ
     # --------------------------
@@ -304,7 +319,8 @@ def index():
         comment_text=comment_text,
         key_status=key_status,
         global_notice=global_notice,
-        personal_items=PERSONAL_ITEMS
+        personal_items=PERSONAL_ITEMS,
+        band_apply_enabled=band_apply_enabled
     )
 
 # --------------------------
