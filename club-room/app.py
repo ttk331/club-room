@@ -631,6 +631,32 @@ def admin():
         board_collection.find()
     )
 
+    setting = settings_collection.find_one()
+
+    band_apply_enabled = True
+
+    if setting:
+
+        band_apply_enabled = setting.get(
+            "band_apply_enabled",
+            True
+        )
+
+    reservations.sort(
+        key=lambda x: (
+            x.get("日付", ""),
+            x.get("スロット", "")
+        )
+    )
+
+    return render_template(
+        "admin.html",
+        reservations=reservations,
+        comments=comments,
+        board_comments=board_comments,
+        band_apply_enabled=band_apply_enabled
+    )
+
     reservations.sort(
         key=lambda x: (
             x.get("日付", ""),
