@@ -247,6 +247,8 @@ input[type="date"]{
 
 {% endfor %}
 
+{% if r.get("名称") == "個人練" or r.get("名前") == "個人練" %}
+
 <form action="/add" method="post">
     <input
         type="hidden"
