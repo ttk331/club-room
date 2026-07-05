@@ -177,84 +177,36 @@ button{
 
 {% for b in board_comments %}
 
-<tr>
+    {% if b["comment"] != "バンド申請" %}
 
-    <td>{{ b["time"] }}</td>
+    <tr>
 
-    <td>
+        <td>{{ b["time"] }}</td>
 
-    {% if b["comment"] == "バンド申請" %}
+        <td>
+            {{ b["comment"] }}
+        </td>
 
-        <table>
+        <td>
 
-            <tr>
-                <td>バンド名</td>
-                <td>{{ b.get("band_name", "") }}</td>
-            </tr>
+            <form action="/delete_board_comment" method="post">
 
-            <tr>
-                <td>ボーカル</td>
-                <td>{{ b.get("vocal", "") }}</td>
-            </tr>
+                <input
+                    type="hidden"
+                    name="id"
+                    value="{{ b['_id'] }}">
 
-            <tr>
-                <td>リード</td>
-                <td>{{ b.get("lead", "") }}</td>
-            </tr>
+                <button type="submit">
+                    削除
+                </button>
 
-            <tr>
-                <td>バッキング</td>
-                <td>{{ b.get("backing", "") }}</td>
-            </tr>
+            </form>
 
-            <tr>
-                <td>ベース</td>
-                <td>{{ b.get("bass", "") }}</td>
-            </tr>
+        </td>
 
-            <tr>
-                <td>キーボード</td>
-                <td>{{ b.get("keyboard", "") }}</td>
-            </tr>
-
-            <tr>
-                <td>ドラム</td>
-                <td>{{ b.get("drums", "") }}</td>
-            </tr>
-
-            <tr>
-                <td>その他</td>
-                <td>{{ b.get("other", "") }}</td>
-            </tr>
-
-        </table>
-
-    {% else %}
-
-        {{ b["comment"] }}
+    </tr>
 
     {% endif %}
-
-</td>
-
-    <td>
-
-        <form action="/delete_board_comment" method="post">
-
-            <input
-                type="hidden"
-                name="id"
-                value="{{ b['_id'] }}">
-
-            <button type="submit">
-                削除
-            </button>
-
-        </form>
-
-    </td>
-
-</tr>
 
 {% endfor %}
 
