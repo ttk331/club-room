@@ -247,6 +247,50 @@ input[type="date"]{
 
 {% endfor %}
 
+/add
+
+    <input
+        type="hidden"
+        name="date"
+        value="{{ selected_date }}">
+
+    <input
+        type="hidden"
+        name="slot"
+        value="{{ item.slot }}">
+
+    <input
+        type="hidden"
+        name="name"
+        value="個人練">
+
+    <select
+        name="items"
+        multiple
+        size="5">
+
+        {% for item_name in personal_items %}
+
+            {% if item_name not in item.used_items %}
+
+                <option value="{{ item_name }}">
+                    {{ item_name }}
+                </option>
+
+            {% endif %}
+
+        {% endfor %}
+
+    </select>
+
+    <br><br>
+
+    <button type="submit">
+        機材追加
+    </button>
+
+</form>
+    
 {% else %}
 
 <form action="/add" method="post">
