@@ -265,12 +265,17 @@ def index():
 
             for r in slot_reservations:
 
-                if r.get("機材"):
+                devices = r.get("機材", [])
+
+                if isinstance(devices, str):
+                    devices = [devices]
+
+                for device in devices:
 
                     used_items.append(
-                        r.get("機材")
+                        device
                     )
-
+                    
             slot_status.append({
                 "slot": slot,
                 "reserved": True,
@@ -313,7 +318,7 @@ def add():
     name = request.form.get("name")
     date = request.form.get("date")
     slot = request.form.get("slot")
-    item = request.form.get("item")
+    items = request.form.getlist("items")
 
     if not (
         name and
@@ -328,7 +333,7 @@ def add():
     )
 
     if name != "個人練":
-        item = ""
+        items = []
 
     # --------------------------
     # 過去日予約禁止
@@ -344,17 +349,33 @@ def add():
 
         if name == "個人練":
 
-            if not item:
+            if not items:
                 return "機材を選択してください"
 
-            exists = collection.find_one({
-                "日付": date,
-                "スロット": slot,
-                "機材": item
-            })
+            existing = list(
+                collection.find({
+                    "日付": date,
+                    "スロット": slot
+                })
+            )
 
-            if exists:
-                return "その機材は使用中です"
+            for r in existing:
+
+                if (
+                    r.get("名称") != "個人練" and
+                    r.get("名前") != "個人練"
+                ):
+                    continue
+
+                devices = r.get("機材", [])
+
+                if isinstance(devices, str):
+                    devices = [devices]
+
+                for used in devices:
+
+                    if used in items:
+                        return f"{used}は使用中です"
 
         else:
 
@@ -373,7 +394,7 @@ def add():
             "名称": name,
             "日付": date,
             "スロット": slot,
-            "機材": item
+            "機材": items
         })
 
     except Exception as e:
