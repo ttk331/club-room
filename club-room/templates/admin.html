@@ -185,47 +185,49 @@ button{
 
     {% if b["comment"] == "バンド申請" %}
 
-        <b>バンド申請</b>
+        <table>
 
-        <br><br>
+            <tr>
+                <td>バンド名</td>
+                <td>{{ b.get("band_name", "") }}</td>
+            </tr>
 
-        バンド名：
-        {{ b.get("band_name", "") }}
+            <tr>
+                <td>ボーカル</td>
+                <td>{{ b.get("vocal", "") }}</td>
+            </tr>
 
-        <br>
+            <tr>
+                <td>リード</td>
+                <td>{{ b.get("lead", "") }}</td>
+            </tr>
 
-        ボーカル：
-        {{ b.get("vocal", "") }}
+            <tr>
+                <td>バッキング</td>
+                <td>{{ b.get("backing", "") }}</td>
+            </tr>
 
-        <br>
+            <tr>
+                <td>ベース</td>
+                <td>{{ b.get("bass", "") }}</td>
+            </tr>
 
-        リード：
-        {{ b.get("lead", "") }}
+            <tr>
+                <td>キーボード</td>
+                <td>{{ b.get("keyboard", "") }}</td>
+            </tr>
 
-        <br>
+            <tr>
+                <td>ドラム</td>
+                <td>{{ b.get("drums", "") }}</td>
+            </tr>
 
-        バッキング：
-        {{ b.get("backing", "") }}
+            <tr>
+                <td>その他</td>
+                <td>{{ b.get("other", "") }}</td>
+            </tr>
 
-        <br>
-
-        ベース：
-        {{ b.get("bass", "") }}
-
-        <br>
-
-        キーボード：
-        {{ b.get("keyboard", "") }}
-
-        <br>
-
-        ドラム：
-        {{ b.get("drums", "") }}
-
-        <br>
-
-        その他：
-        {{ b.get("other", "") }}
+        </table>
 
     {% else %}
 
