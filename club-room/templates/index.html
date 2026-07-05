@@ -237,17 +237,15 @@ input[type="date"]{
     {{ r.get("名称") or r.get("名前", "") }}
 </div>
 
-{% if r.get("機材") %}
+{% for device in r.get("機材", []) %}
 
 <div>
-    使用機材：{{ r.get("機材") }}
+    使用機材：{{ device }}
 </div>
 
-{% endif %}
+{% endfor %}
 
 <hr>
-
-{% endfor %}
 
 {% else %}
 
@@ -270,21 +268,19 @@ input[type="date"]{
     required
     oninput="
         this.parentElement.querySelector('.item-select').style.display =
-        this.value == '個人練' ? 'inline' : 'none';
+        this.value == '個人練' ? 'inline-block' : 'none';
     ">
 
 <select
-    name="item"
+    name="items"
+    multiple
+    size="5"
     class="item-select"
     style="display:none;">
 
-    <option value="">
-        機材選択
-    </option>
-
     {% for item_name in personal_items %}
 
-       {% if item_name not in item.used_items %}
+        {% if item_name not in item.used_items %}
 
             <option value="{{ item_name }}">
                 {{ item_name }}
