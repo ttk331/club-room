@@ -303,6 +303,7 @@ button{
             <th>キーボード</th>
             <th>ドラム</th>
             <th>その他</th>
+            <th>削除</th>
         </tr>
 
         {% for b in board_comments %}
@@ -328,6 +329,23 @@ button{
                 <td>{{ b.get("drums", "") }}</td>
 
                 <td>{{ b.get("other", "") }}</td>
+
+                <td>
+
+                    <form action="/delete_board_comment" method="post">
+
+                        <input
+                            type="hidden"
+                            name="id"
+                            value="{{ b['_id'] }}">
+
+                        <button type="submit">
+                            削除
+                        </button>
+
+                    </form>
+
+                </td>
 
             </tr>
 
