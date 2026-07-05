@@ -403,13 +403,97 @@ input[type="date"]{
     <form action="/add_board_comment" method="post">
 
         <textarea
+            id="comment"
             name="comment"
             rows="4"
             cols="50"
             placeholder="コメントを入力してください"
+            oninput="toggleBandForm()"
             required></textarea>
 
-        <br><br>
+        <div
+            id="bandForm"
+            style="display:none; margin-top:20px;">
+
+            <table border="1" width="100%">
+
+                <tr>
+                    <td>バンド名</td>
+                    <td>
+                        <input
+                            type="text"
+                            name="band_name">
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>ボーカル</td>
+                    <td>
+                        <input
+                            type="text"
+                            name="vocal">
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>リード</td>
+                    <td>
+                        <input
+                            type="text"
+                            name="lead">
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>バッキング</td>
+                    <td>
+                        <input
+                            type="text"
+                            name="backing">
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>ベース</td>
+                    <td>
+                        <input
+                            type="text"
+                            name="bass">
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>キーボード</td>
+                    <td>
+                        <input
+                            type="text"
+                            name="keyboard">
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>ドラム</td>
+                    <td>
+                        <input
+                            type="text"
+                            name="drums">
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>その他</td>
+                    <td>
+                        <input
+                            type="text"
+                            name="other">
+                    </td>
+                </tr>
+
+            </table>
+
+        </div>
+
+        <br>
 
         <button type="submit">
             送信
@@ -418,6 +502,30 @@ input[type="date"]{
     </form>
 
 </div>
+
+<script>
+
+function toggleBandForm() {
+
+    const comment =
+        document.getElementById("comment").value;
+
+    const form =
+        document.getElementById("bandForm");
+
+    if (comment.trim() === "バンド申請") {
+
+        form.style.display = "block";
+
+    } else {
+
+        form.style.display = "none";
+
+    }
+
+}
+
+</script>
     
 </body>
 </html>
