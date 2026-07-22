@@ -248,6 +248,33 @@ input[type="date"]{
             {{ r.get("名称") or r.get("名前", "") }}
         </div>
 
+        {% if r.get("email") == user_email %}
+
+        " method="post">
+
+            <input
+                type="hidden"
+                name="date"
+                value="{{ selected_date }}">
+
+            <input
+                type="hidden"
+                name="slot"
+                value="{{ item.slot }}">
+
+            <input
+                type="hidden"
+                name="name"
+                value="{{ r.get('名称') or r.get('名前', '') }}">
+
+            <button type="submit">
+                自分の予約を削除
+            </button>
+
+        </form>
+
+        {% endif %}
+
         {% if r.get("名称") == "個人練" or r.get("名前") == "個人練" %}
 
             {% for device in r.get("機材", []) %}
