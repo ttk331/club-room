@@ -106,6 +106,17 @@ input[type="date"]{
 
 <h1>🎸 部室予約システム</h1>
 
+<div style="text-align:center; margin-bottom:20px;">
+
+    ログイン中：
+    {{ session["email"] }}
+
+    <br><br>
+
+    /logout
+
+</div>
+
 {% if in_use %}
 <div class="status status-red">
     🔴 使用中<br>
