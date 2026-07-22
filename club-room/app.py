@@ -80,6 +80,15 @@ def login():
         "login.html"
     )
 
+@app.route("/logout")
+def logout():
+
+    session.clear()
+
+    return redirect(
+        "/login"
+    )
+
 @app.route("/do_login", methods=["POST"])
 def do_login():
 
@@ -103,6 +112,12 @@ def do_login():
 
 @app.route("/")
 def index():
+
+    if "email" not in session:
+
+        return redirect(
+            "/login"
+        )
 
     if collection is None:
         return "データベースに接続できていません"
