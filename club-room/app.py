@@ -373,7 +373,8 @@ def index():
         key_status=key_status,
         global_notice=global_notice,
         personal_items=PERSONAL_ITEMS,
-        band_apply_enabled=band_apply_enabled
+        band_apply_enabled=band_apply_enabled,
+        user_email=session["email"]
     )
 
 # --------------------------
@@ -492,7 +493,8 @@ def add():
                     "名称": "個人練",
                     "日付": date,
                     "スロット": slot,
-                    "機材": items
+                    "機材": items,
+                    "email": session["email"]
                 })
 
         else:
@@ -504,7 +506,8 @@ def add():
                 "名称": name,
                 "日付": date,
                 "スロット": slot,
-                "機材": []
+                "機材": [],
+                "email": session["email"]
             })
 
     except Exception as e:
@@ -527,18 +530,31 @@ def delete():
     slot = request.form.get("slot")
     name = request.form.get("name")
 
-    try:
+try:
 
-        collection.delete_one({
-            "日付": date,
-            "スロット": slot,
-            "$or": [
-                {"名称": name},
-                {"名前": name}
-            ]
-        })
+    reservation = collection.find_one({
+        "日付": date,
+        "スロット": slot,
+        "$or": [
+            {"名称": name},
+            {"名前": name}
+        ]
+    })
 
-    except Exception as e:
+    if not reservation:
+        return redirect("/")
+
+    if reservation.get(
+        "email"
+    ) != session["email"]:
+
+        return "自分の予約のみ削除できます"
+
+    collection.delete_one({
+        "_id": reservation["_id"]
+    })
+
+except Exception as e:
         print("削除エラー:", e)
 
     return redirect(
