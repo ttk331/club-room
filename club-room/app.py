@@ -530,31 +530,29 @@ def delete():
     slot = request.form.get("slot")
     name = request.form.get("name")
 
-try:
+    try:
 
-    reservation = collection.find_one({
-        "日付": date,
-        "スロット": slot,
-        "$or": [
-            {"名称": name},
-            {"名前": name}
-        ]
-    })
+        reservation = collection.find_one({
+            "日付": date,
+            "スロット": slot,
+            "$or": [
+                {"名称": name},
+                {"名前": name}
+            ]
+        })
 
-    if not reservation:
-        return redirect("/")
+        if not reservation:
+            return redirect("/")
 
-    if reservation.get(
-        "email"
-    ) != session["email"]:
+        if reservation.get("email") != session["email"]:
+            return "自分の予約のみ削除できます"
 
-        return "自分の予約のみ削除できます"
+        collection.delete_one({
+            "_id": reservation["_id"]
+        })
 
-    collection.delete_one({
-        "_id": reservation["_id"]
-    })
+    except Exception as e:
 
-except Exception as e:
         print("削除エラー:", e)
 
     return redirect(
