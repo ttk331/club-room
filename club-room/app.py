@@ -1,10 +1,20 @@
-from flask import Flask, render_template, request, redirect
+from flask import (
+    Flask,
+    render_template,
+    request,
+    redirect,
+    session
+)
 from pymongo import MongoClient
 from bson import ObjectId
 from datetime import datetime, timedelta
 import os
 
 app = Flask(__name__)
+
+app.secret_key = "clubroom_secret_key"
+
+SCHOOL_MAIL_DOMAIN = "@naruto-u.ac.jp"
 
 # --------------------------
 # MongoDB接続
@@ -63,6 +73,34 @@ PERSONAL_ITEMS = [
 # --------------------------
 # メイン画面
 # --------------------------
+@app.route("/login")
+def login():
+
+    return render_template(
+        "login.html"
+    )
+
+@app.route("/do_login", methods=["POST"])
+def do_login():
+
+    email = request.form.get(
+        "email",
+        ""
+    ).strip()
+
+    if not email.endswith(
+        SCHOOL_MAIL_DOMAIN
+    ):
+
+        return (
+            "学校メールアドレスのみ"
+            "利用できます"
+        )
+
+    session["email"] = email
+
+    return redirect("/")
+
 @app.route("/")
 def index():
 
