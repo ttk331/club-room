@@ -113,8 +113,6 @@ input[type="date"]{
 
     <br><br>
 
-    /logout
-
 </div>
 
 {% if in_use %}
@@ -250,7 +248,7 @@ input[type="date"]{
 
         {% if r.get("email") == user_email %}
 
-        " method="post">
+        <form action="/add" method="post">
 
             <input
                 type="hidden"
