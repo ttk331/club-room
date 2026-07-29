@@ -3,7 +3,8 @@ from flask import (
     render_template,
     request,
     redirect,
-    session
+    session,
+    make_response
 )
 from pymongo import MongoClient
 from bson import ObjectId
@@ -106,18 +107,38 @@ def do_login():
             "利用できます"
         )
 
+    response = make_response(
+        redirect("/")
+    )
+
+    response.set_cookie(
+        "email",
+        email,
+        max_age=60 * 60 * 24 * 365
+    )
+
     session["email"] = email
 
-    return redirect("/")
+    return response
 
 @app.route("/")
 def index():
 
     if "email" not in session:
 
-        return redirect(
-            "/login"
+        email = request.cookies.get(
+            "email"
         )
+
+        if email:
+
+            session["email"] = email
+
+        else:
+
+            return redirect(
+                "/login"
+            )
 
     if collection is None:
         return "データベースに接続できていません"
