@@ -791,7 +791,7 @@ def edit_band(id):
 
     band = board_collection.find_one({
         "_id": ObjectId(id)
-    })
+    )
 
     return render_template(
         "edit_band.html",
