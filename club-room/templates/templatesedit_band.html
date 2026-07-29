@@ -45,7 +45,7 @@ button{
 
 <h1>バンド申請編集</h1>
 
-/update_band
+<form action="/update_band" method="post">
 
     <input
         type="hidden"
@@ -113,5 +113,46 @@ button{
                     value="{{ band.get('keyboard', '') }}">
             </td>
         </tr>
+                <tr>
+            <td>ドラム</td>
+            <td>
+                <input
+                    type="text"
+                    name="drums"
+                    value="{{ band.get('drums', '') }}">
+            </td>
+        </tr>
 
+        <tr>
+            <td>その他</td>
+            <td>
+                <input
+                    type="text"
+                    name="other"
+                    value="{{ band.get('other', '') }}">
+            </td>
+        </tr>
+
+    </table>
+
+    <br>
+
+    <button type="submit">
+        保存
+    </button>
+
+</form>
+
+<br><br>
+
+<form action="/admin" method="get">
+
+    <button type="submit">
+        管理画面に戻る
+    </button>
+
+</form>
+
+</body>
+</html>
   
