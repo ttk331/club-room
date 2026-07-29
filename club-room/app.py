@@ -786,6 +786,75 @@ def delete_board_comment():
 
     return redirect("/admin")
 
+@app.route("/edit_band/<id>")
+def edit_band(id):
+
+    band = board_collection.find_one({
+        "_id": ObjectId(id)
+    })
+
+    return render_template(
+        "edit_band.html",
+        band=band
+    )
+
+@app.route("/update_band", methods=["POST"])
+def update_band():
+
+    board_collection.update_one(
+        {
+            "_id": ObjectId(
+                request.form.get("id")
+            )
+        },
+        {
+            "$set": {
+
+                "band_name":
+                    request.form.get(
+                        "band_name"
+                    ),
+
+                "vocal":
+                    request.form.get(
+                        "vocal"
+                    ),
+
+                "lead":
+                    request.form.get(
+                        "lead"
+                    ),
+
+                "backing":
+                    request.form.get(
+                        "backing"
+                    ),
+
+                "bass":
+                    request.form.get(
+                        "bass"
+                    ),
+
+                "keyboard":
+                    request.form.get(
+                        "keyboard"
+                    ),
+
+                "drums":
+                    request.form.get(
+                        "drums"
+                    ),
+
+                "other":
+                    request.form.get(
+                        "other"
+                    )
+            }
+        }
+    )
+
+    return redirect("/admin")
+
 @app.route("/toggle_band_apply", methods=["POST"])
 def toggle_band_apply():
 
