@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>バンド申請編集</title>
+
+<style>
+
+body{
+    font-family:"Yu Gothic",sans-serif;
+    max-width:800px;
+    margin:auto;
+    padding:20px;
+}
+
+input{
+    width:100%;
+    padding:8px;
+    box-sizing:border-box;
+}
+
+table{
+    width:100%;
+}
+
+td{
+    padding:10px;
+}
+
+button{
+    background:#28a745;
+    color:white;
+    border:none;
+    padding:10px 20px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+</style>
+
+</head>
+<body>
+
+<h1>バンド申請編集</h1>
+
+/update_band
+
+    <input
+        type="hidden"
+        name="id"
+        value="{{ band['_id'] }}">
+
+    <table>
+
+        <tr>
+            <td>バンド名</td>
+            <td>
+                <input
+                    type="text"
+                    name="band_name"
+                    value="{{ band.get('band_name', '') }}">
+            </td>
+        </tr>
+
+        <tr>
+            <td>ボーカル</td>
+            <td>
+                <input
+                    type="text"
+                    name="vocal"
+                    value="{{ band.get('vocal', '') }}">
+            </td>
+        </tr>
+
+        <tr>
+            <td>リード</td>
+            <td>
+                <input
+                    type="text"
+                    name="lead"
+                    value="{{ band.get('lead', '') }}">
+            </td>
+        </tr>
+
+        <tr>
+            <td>バッキング</td>
+            <td>
+                <input
+                    type="text"
+                    name="backing"
+                    value="{{ band.get('backing', '') }}">
+            </td>
+        </tr>
+
+        <tr>
+            <td>ベース</td>
+            <td>
+                <input
+                    type="text"
+                    name="bass"
+                    value="{{ band.get('bass', '') }}">
+            </td>
+        </tr>
+
+        <tr>
+            <td>キーボード</td>
+            <td>
+                <input
+                    type="text"
+                    name="keyboard"
+                    value="{{ band.get('keyboard', '') }}">
+            </td>
+        </tr>
+
+  
