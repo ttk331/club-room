@@ -366,14 +366,7 @@ button{
 
                 <td>
 
-                    <form action="/edit_timetable/{{ t['_id'] }}" method="get">
-
-                        <button type="submit">
-                            編集
-                        </button>
-
-                    </form>
-
+                   
                 </td>
 
                 <td>
@@ -449,12 +442,12 @@ button{
 
 <h3>{{ t["live_name"] }}</h3>
 
-['_id'] }}" method="get">
+<form action="/edit_timetable/{{ t['_id'] }}" method="get">
 
     <button type="submit">
-        編集
+    編集 
     </button>
-
+    
 </form>
 
 <table>
