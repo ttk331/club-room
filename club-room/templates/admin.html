@@ -405,9 +405,45 @@ button{
 
 <br>
 
+<hr>
+
+<h2>ライブタイムテーブル作成</h2>
+
+<form action="/generate_timetable">
+
+    <input
+        type="text"
+        name="live_name"
+        placeholder="ライブ名"
+        required>
+
+    <br><br>
+
+    <input
+        type="time"
+        name="start_time"
+        required>
+
+    <br><br>
+
+    <textarea
+        name="bands"
+        rows="10"
+        cols="50"
+        placeholder="1行に1バンドずつ入力&#10;休憩も入力可能"
+        required></textarea>
+
+    <br><br>
+
+    <button type="submit">
+        タイムテーブル作成
+    </button>
+
+</form>
+
 <a class="back" href="/">
     予約画面へ戻る
 </a>
-
+    
 </body>
 </html>
