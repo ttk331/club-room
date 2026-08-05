@@ -856,6 +856,65 @@ def update_band():
 
     return redirect("/admin")
 
+@app.route("/generate_timetable", methods=["POST"])
+def generate_timetable():
+
+    live_name = request.form.get(
+        "live_name"
+    )
+
+    start_time = request.form.get(
+        "start_time"
+    )
+
+    bands = request.form.get(
+        "bands"
+    ).splitlines()
+
+    current = datetime.strptime(
+        start_time,
+        "%H:%M"
+    )
+
+    timetable = []
+
+    for band in bands:
+
+        band = band.strip()
+
+        if not band:
+            continue
+
+        timetable.append({
+
+            "start":
+                current.strftime("%H:%M"),
+
+            "name":
+                band
+        })
+
+        if band == "休憩":
+
+            current += timedelta(
+                minutes=10
+            )
+
+        else:
+
+            current += timedelta(
+                minutes=30
+            )
+
+    timetable_collection.insert_one({
+
+        "live_name": live_name,
+
+        "timetable": timetable
+    })
+
+    return redirect("/admin")
+
 @app.route("/toggle_band_apply", methods=["POST"])
 def toggle_band_apply():
 
