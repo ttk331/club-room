@@ -994,6 +994,17 @@ def update_timetable():
 
     return redirect("/admin")
 
+@app.route("/delete_timetable", methods=["POST"])
+def delete_timetable():
+
+    timetable_id = request.form.get("id")
+
+    timetable_collection.delete_one({
+        "_id": ObjectId(timetable_id)
+    })
+
+    return redirect("/admin")
+
 @app.route("/toggle_band_apply", methods=["POST"])
 def toggle_band_apply():
 
