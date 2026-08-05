@@ -764,7 +764,7 @@ def admin():
         reservations=reservations,
         comments=comments,
         board_comments=board_comments,
-        band_apply_enabled=band_apply_enabled
+        band_apply_enabled=band_apply_enabled,
         timetables=timetables
     )
     
