@@ -450,6 +450,19 @@ button{
     
 </form>
 
+<form action="/delete_timetable" method="post">
+
+    <input
+        type="hidden"
+        name="id"
+        value="{{ t['_id'] }}">
+
+    <button type="submit">
+        削除
+    </button>
+
+</form>
+
 <table>
 
 <tr>
