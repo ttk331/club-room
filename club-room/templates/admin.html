@@ -224,6 +224,7 @@ button{
     <th>日付</th>
     <th>時間帯</th>
     <th>バンド名</th>
+    <th>メールアドレス</th>
     <th>削除</th>
 </tr>
 
@@ -236,6 +237,8 @@ button{
     <td>{{ r["スロット"] }}</td>
 
     <td>{{ r.get("名称") or r.get("名前", "") }}</td>
+
+    <td>{{ r.get("email", "") }}</td>
 
     <td>
 
