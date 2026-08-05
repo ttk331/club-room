@@ -400,6 +400,28 @@ button{
 
 <hr>
 
+<button
+    type="button"
+    onclick="
+        const area =
+            document.getElementById('timetableArea');
+
+        area.style.display =
+            area.style.display === 'none'
+            ? 'block'
+            : 'none';
+    ">
+
+    表示
+
+</button>
+
+<br><br>
+
+<div
+    id="timetableArea"
+    style="display:none;">
+    
 <h2>ライブタイムテーブル作成</h2>
 
 <form action="/generate_timetable" method="post">
@@ -450,6 +472,8 @@ button{
     
 </form>
 
+<br>
+    
 <form action="/delete_timetable" method="post">
 
     <input
@@ -463,6 +487,8 @@ button{
 
 </form>
 
+<br>
+    
 <table>
 
 <tr>
@@ -491,6 +517,8 @@ button{
 <br>
 
 {% endfor %}
+
+</div>
 
 <a class="back" href="/">
     予約画面へ戻る
