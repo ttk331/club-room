@@ -737,6 +737,10 @@ def admin():
         board_collection.find()
     )
 
+    timetables = list(
+    timetable_collection.find()
+　　)
+
     setting = settings_collection.find_one()
 
     band_apply_enabled = True
@@ -761,6 +765,7 @@ def admin():
         comments=comments,
         board_comments=board_comments,
         band_apply_enabled=band_apply_enabled
+        timetables=timetables
     )
     
 @app.route("/admin_delete", methods=["POST"])
