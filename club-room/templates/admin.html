@@ -441,6 +441,43 @@ button{
 
 </form>
 
+<hr>
+
+<h2>タイムテーブル一覧</h2>
+
+{% for t in timetables %}
+
+<h3>{{ t["live_name"] }}</h3>
+
+<table>
+
+<tr>
+    <th>開始時刻</th>
+    <th>内容</th>
+</tr>
+
+{% for row in t["timetable"] %}
+
+<tr>
+
+    <td>
+        {{ row["start"] }}
+    </td>
+
+    <td>
+        {{ row["name"] }}
+    </td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+<br>
+
+{% endfor %}
+    
 <a class="back" href="/">
     予約画面へ戻る
 </a>
