@@ -920,6 +920,18 @@ def generate_timetable():
 
     return redirect("/admin")
 
+@app.route("/edit_timetable/<id>")
+def edit_timetable(id):
+
+    timetable = timetable_collection.find_one({
+        "_id": ObjectId(id)
+    })
+
+    return render_template(
+        "edit_timetable.html",
+        timetable=timetable
+    )
+
 @app.route("/toggle_band_apply", methods=["POST"])
 def toggle_band_apply():
 
