@@ -739,7 +739,7 @@ def admin():
 
     timetables = list(
     timetable_collection.find()
-　　)
+    )
 
     setting = settings_collection.find_one()
 
