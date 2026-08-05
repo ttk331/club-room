@@ -932,6 +932,68 @@ def edit_timetable(id):
         timetable=timetable
     )
 
+@app.route("/update_timetable", methods=["POST"])
+def update_timetable():
+
+    timetable_id = request.form.get("id")
+
+    live_name = request.form.get(
+        "live_name"
+    )
+
+    bands = request.form.get(
+        "bands"
+    ).splitlines()
+
+    old_data = timetable_collection.find_one({
+        "_id": ObjectId(timetable_id)
+    })
+
+    current = datetime.strptime(
+        old_data["timetable"][0]["start"],
+        "%H:%M"
+    )
+
+    timetable = []
+
+    for band in bands:
+
+        band = band.strip()
+
+        if not band:
+            continue
+
+        timetable.append({
+            "start": current.strftime("%H:%M"),
+            "name": band
+        })
+
+        if band == "休憩":
+
+            current += timedelta(
+                minutes=10
+            )
+
+        else:
+
+            current += timedelta(
+                minutes=30
+            )
+
+    timetable_collection.update_one(
+        {
+            "_id": ObjectId(timetable_id)
+        },
+        {
+            "$set": {
+                "live_name": live_name,
+                "timetable": timetable
+            }
+        }
+    )
+
+    return redirect("/admin")
+
 @app.route("/toggle_band_apply", methods=["POST"])
 def toggle_band_apply():
 
