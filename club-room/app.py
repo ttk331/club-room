@@ -37,6 +37,7 @@ try:
     board_collection = db["board"]
     global_notice_collection = db["global_notice"]
     settings_collection = db["settings"]
+    timetable_collection = db["timetables"]
 
     print("✅ MongoDB接続成功")
 
