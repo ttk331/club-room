@@ -502,19 +502,6 @@ def add():
 
         else:
 
-                collection.insert_one({
-                    "id": str(
-                        datetime.now().timestamp()
-                    ),
-                    "名称": "個人練",
-                    "日付": date,
-                    "スロット": slot,
-                    "機材": items,
-                    "email": session["email"]
-                })
-
-        else:
-
             collection.insert_one({
                 "id": str(
                     datetime.now().timestamp()
