@@ -336,6 +336,12 @@ def index():
             True
         )
 
+    bands = list(
+        board_collection.find({
+            "comment": "バンド申請"
+        })
+    )
+
     # --------------------------
     # 表用データ
     # --------------------------
