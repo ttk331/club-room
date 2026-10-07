@@ -437,6 +437,28 @@ input[type="date"]{
 <hr>
 
 <h2>申請中のバンド一覧</h2>
+    
+<button
+    type="button"
+    onclick="
+        const area =
+            document.getElementById('bandListArea');
+
+        area.style.display =
+            area.style.display === 'none'
+            ? 'block'
+            : 'none';
+    ">
+
+    表示
+
+</button>
+
+<br><br>
+
+<div
+    id="bandListArea"
+    style="display:none;">
 
 {% for b in bands %}
 
@@ -464,6 +486,8 @@ input[type="date"]{
 </div>
 
 {% endfor %}
+
+</div>
 
 <hr>
 
