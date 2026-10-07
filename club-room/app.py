@@ -488,32 +488,19 @@ def add():
                 return "その時間帯は予約済みです"
 
         if name == "個人練":
-   
-            existing_personal = collection.find_one({
+
+            collection.insert_one({
+                "id": str(
+                    datetime.now().timestamp()
+                ),
+                "名称": "個人練",
                 "日付": date,
                 "スロット": slot,
-                "$or": [
-                    {"名称": "個人練"},
-                    {"名前": "個人練"}
-                ]
+                "機材": items,
+                "email": session["email"]
             })
 
-            if existing_personal:
-
-                collection.update_one(
-                    {
-                        "_id": existing_personal["_id"]
-                    },
-                    {
-                        "$addToSet": {
-                            "機材": {
-                                "$each": items
-                            }
-                        }
-                    }
-                )
-
-            else:
+        else:
 
                 collection.insert_one({
                     "id": str(
