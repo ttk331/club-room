@@ -387,7 +387,7 @@ def index():
 
                 normal_reservations.append({
                     "名称": "個人練",
-                    "機材": personal_devices
+                    "機材": personal_devices,
                     "email": session["email"]
                 })
 
