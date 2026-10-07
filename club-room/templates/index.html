@@ -434,6 +434,39 @@ input[type="date"]{
 
 <div class="card">
 
+<hr>
+
+<h2>申請中のバンド一覧</h2>
+
+{% for b in bands %}
+
+<div
+    style="
+        border:1px solid #ccc;
+        padding:10px;
+        margin-bottom:10px;
+        background:white;
+    ">
+
+    <h3>{{ b["band_name"] }}</h3>
+
+    <p>Vo : {{ b.get("vocal","") }}</p>
+    <p>Lead : {{ b.get("lead","") }}</p>
+    <p>Backing : {{ b.get("backing","") }}</p>
+    <p>Ba : {{ b.get("bass","") }}</p>
+    <p>Key : {{ b.get("keyboard","") }}</p>
+    <p>Dr : {{ b.get("drums","") }}</p>
+
+    {% if b.get("other","") %}
+    <p>その他 : {{ b.get("other","") }}</p>
+    {% endif %}
+
+</div>
+
+{% endfor %}
+
+<hr>
+
     <h2>💬 コメント</h2>
 
     <form action="/add_board_comment" method="post">
