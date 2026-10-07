@@ -538,6 +538,7 @@ def delete():
         reservation = collection.find_one({
             "日付": date,
             "スロット": slot,
+            "email": session["email"],
             "$or": [
                 {"名称": name},
                 {"名前": name}
