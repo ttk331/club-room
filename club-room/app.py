@@ -402,7 +402,8 @@ def index():
         global_notice=global_notice,
         personal_items=PERSONAL_ITEMS,
         band_apply_enabled=band_apply_enabled,
-        user_email=session["email"]
+        user_email=session["email"],
+        bands=bands
     )
 
 # --------------------------
