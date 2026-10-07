@@ -360,25 +360,44 @@ def index():
 
             used_items = []
 
+            normal_reservations = []
+            personal_devices = []
+
             for r in slot_reservations:
 
-                devices = r.get("機材", [])
+                if (
+                    r.get("名称") == "個人練" or
+                    r.get("名前") == "個人練"
+                ):
 
-                if isinstance(devices, str):
-                    devices = [devices]
+                    devices = r.get("機材", [])
 
-                for device in devices:
+                    if isinstance(devices, str):
+                        devices = [devices]
 
-                    used_items.append(
-                        device
-                    )
-                    
+                    for device in devices:
+                        used_items.append(device)
+                        personal_devices.append(device)
+
+                else:
+
+                    normal_reservations.append(r)
+
+            if personal_devices:
+
+                normal_reservations.append({
+                    "名称": "個人練",
+                    "機材": personal_devices
+                    "email": session["email"]
+                })
+
             slot_status.append({
                 "slot": slot,
                 "reserved": True,
-                "reservations": slot_reservations,
+                "reservations": normal_reservations,
                 "used_items": used_items
             })
+
 
         else:
 
