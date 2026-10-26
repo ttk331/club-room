@@ -275,6 +275,10 @@ input[type="date"]{
 
         {% if r.get("名称") == "個人練" or r.get("名前") == "個人練" %}
 
+            <div>
+                予約者：{{ r.get("nickname", "不明") }}
+            </div>
+
             {% for device in r.get("機材", []) %}
 
                 <div>
