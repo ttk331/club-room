@@ -367,7 +367,7 @@ def index():
             used_items = []
 
             normal_reservations = []
-            personal_devices = []
+            personal_users = []
 
             for r in slot_reservations:
 
@@ -382,20 +382,28 @@ def index():
                         devices = [devices]
 
                     for device in devices:
-                        used_items.append(device)
-                        personal_devices.append(device)
+
+                        used_items.append(
+                            device
+                        )
+
+                        personal_users.append({
+                            "nickname": r.get(
+                                "nickname",
+                                "不明"
+                            ),
+                            "device": device
+                        })
 
                 else:
 
                     normal_reservations.append(r)
 
-            if personal_devices:
+            if personal_users:
 
                 normal_reservations.append({
                     "名称": "個人練",
-                    "機材": personal_devices,
-                    "email": session["email"],
-                    "nickname": session.get("nickname", "")
+                    "users": personal_users
                 })
 
             slot_status.append({
