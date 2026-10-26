@@ -99,6 +99,11 @@ def do_login():
         ""
     ).strip()
 
+    nickname = request.form.get(
+        "nickname",
+        ""
+    ).strip()
+
     if not email.endswith(
         SCHOOL_MAIL_DOMAIN
     ):
@@ -119,6 +124,7 @@ def do_login():
     )
 
     session["email"] = email
+    session["nickname"] = nickname
 
     return response
 
@@ -516,7 +522,8 @@ def add():
                 "日付": date,
                 "スロット": slot,
                 "機材": items,
-                "email": session["email"]
+                "email": session["email"],
+                "nickname": session["nickname"]
             })
 
         else:
