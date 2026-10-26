@@ -533,7 +533,10 @@ def add():
                 "スロット": slot,
                 "機材": items,
                 "email": session["email"],
-                "nickname": session["nickname"]
+                "nickname": session.get(
+                    "nickname",
+                    session["email"].split("@")[0]
+                )
             })
 
         else:
