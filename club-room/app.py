@@ -403,7 +403,8 @@ def index():
 
                 normal_reservations.append({
                     "名称": "個人練",
-                    "users": personal_users
+                    "users": personal_users,
+                    "email": session["email"]
                 })
 
             slot_status.append({
