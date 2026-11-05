@@ -141,6 +141,9 @@ def index():
 
             session["email"] = email
 
+        　　if "nickname" not in session:
+        　　　　return redirect("/logout")
+
         else:
 
             return redirect(
