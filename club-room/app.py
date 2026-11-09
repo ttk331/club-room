@@ -123,6 +123,12 @@ def do_login():
         max_age=60 * 60 * 24 * 365
     )
 
+    response.set_cookie(
+        "nickname",
+        nickname,
+        max_age=60 * 60 * 24 * 365
+    )
+
     session["email"] = email
     session["nickname"] = nickname
 
@@ -137,12 +143,16 @@ def index():
             "email"
         )
 
+        nickname = request.cookies.get(
+            "nickname"
+        )
+
         if email:
 
             session["email"] = email
 
-            if "nickname" not in session:
-               return redirect("/logout")
+            if nickname:
+                session["nickname"] = nickname
 
         else:
 
